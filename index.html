@@ -346,6 +346,51 @@ body {
 }
 .sub-leader-note { font-size: 10px; color: var(--text-3); margin-top: 2px; font-style: italic; }
 
+/* ---------- Branched lanes (사업부장 / 담당) ---------- */
+.l1-lanes, .l2-lanes {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+.cell-l1, .cell-l2 {
+  position: relative;
+  padding: 0 !important;
+}
+.cell-l1 > .l1-lanes, .cell-l2 > .l2-lanes {
+  padding: 10px 14px;
+}
+.lane-main {
+  display: flex;
+  align-items: flex-start;
+  width: calc(50% - 8px);
+}
+.l1-lanes-solo > .lane-main, .l2-lanes-solo > .lane-main { width: 100%; }
+.l1-lanes > .lane-main { padding-right: 8px; }
+.l2-lanes > .lane-main { padding-right: 8px; }
+.lane-branch {
+  position: absolute;
+  right: 14px;
+  width: calc(50% - 14px);
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0 8px 12px;
+  border-left: 1.5px dashed var(--border-strong);
+}
+.lane-branch::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  background: var(--border-strong);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+.lane-branch.is-vacant { opacity: 0.7; }
+.leader-vacant { color: var(--muted); font-weight: 500; font-size: 12px; }
+
 mark { background: oklch(0.92 0.10 95); color: var(--text); padding: 0 1px; border-radius: 2px; }
 
 /* ---------- Editable ---------- */
@@ -917,47 +962,7 @@ window.ORG_DATA = [
       "title": "본부장",
       "rank": "전무"
     },
-    "subLeaders": [
-      {
-        "name": "임지홍",
-        "title": "사업부장 (건축사업부)",
-        "rank": "상무"
-      }
-    ],
     "sils": [
-      {
-        "sil": "건축주택사업기획실",
-        "leader2": {
-          "name": "조혁준",
-          "rank": "상무"
-        },
-        "teams": [
-          {
-            "team": "건축주택예산팀",
-            "leader3": {
-              "name": "신현수",
-              "rank": "책임매니저"
-            },
-            "memberCount": 16
-          },
-          {
-            "team": "건축주택경영지원팀",
-            "leader3": {
-              "name": "김춘기",
-              "rank": "책임매니저"
-            },
-            "memberCount": 19
-          },
-          {
-            "team": "건축주택수익성개선팀",
-            "leader3": {
-              "name": "강성묵",
-              "rank": "책임매니저"
-            },
-            "memberCount": 10
-          }
-        ]
-      },
       {
         "sil": "건축사업실",
         "leader2": {
@@ -988,39 +993,6 @@ window.ORG_DATA = [
               "rank": "책임매니저"
             },
             "memberCount": 7
-          }
-        ]
-      },
-      {
-        "sil": "주택설계실",
-        "leader2": {
-          "name": "최광호",
-          "rank": "상무"
-        },
-        "teams": [
-          {
-            "team": "주택설계팀",
-            "leader3": {
-              "name": "이상민",
-              "rank": "책임매니저"
-            },
-            "memberCount": 20
-          },
-          {
-            "team": "인테리어팀",
-            "leader3": {
-              "name": "윤지훈",
-              "rank": "책임매니저"
-            },
-            "memberCount": 7
-          },
-          {
-            "team": "익스테리어팀",
-            "leader3": {
-              "name": "박현",
-              "rank": "책임매니저"
-            },
-            "memberCount": 19
           }
         ]
       },
@@ -1087,6 +1059,72 @@ window.ORG_DATA = [
               "rank": "책임매니저"
             },
             "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "건축주택사업기획실",
+        "leader2": {
+          "name": "조혁준",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축주택예산팀",
+            "leader3": {
+              "name": "신현수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "건축주택경영지원팀",
+            "leader3": {
+              "name": "김춘기",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
+          },
+          {
+            "team": "건축주택수익성개선팀",
+            "leader3": {
+              "name": "강성묵",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      },
+      {
+        "sil": "주택설계실",
+        "leader2": {
+          "name": "최광호",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "주택설계팀",
+            "leader3": {
+              "name": "이상민",
+              "rank": "책임매니저"
+            },
+            "memberCount": 20
+          },
+          {
+            "team": "인테리어팀",
+            "leader3": {
+              "name": "윤지훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "익스테리어팀",
+            "leader3": {
+              "name": "박현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
           }
         ]
       },
@@ -1270,7 +1308,20 @@ window.ORG_DATA = [
       "l2": 10,
       "l3": 31,
       "staff": 393
-    }
+    },
+    "branchLeaders": [
+      {
+        "name": "임지홍",
+        "title": "사업부장",
+        "branch": "건축사업부",
+        "rank": "상무",
+        "sils": [
+          "건축사업실",
+          "건축주택기술실",
+          "건축주택견적실"
+        ]
+      }
+    ]
   },
   {
     "bonbu": "플랜트사업본부",
@@ -1451,60 +1502,19 @@ window.ORG_DATA = [
         },
         "teams": [
           {
+            "team": "플랜트설계관리팀",
+            "leader3": null,
+            "memberCount": 5,
+            "section": "기본설계담당"
+          },
+          {
             "team": "플랜트공정설계팀",
             "leader3": {
               "name": "장경곤",
               "rank": "책임매니저"
             },
-            "memberCount": 9
-          },
-          {
-            "team": "플랜트설계검증팀",
-            "leader3": {
-              "name": "이근직",
-              "rank": "책임매니저"
-            },
-            "memberCount": 9
-          },
-          {
-            "team": "플랜트장치기계설계팀",
-            "leader3": {
-              "name": "김지함",
-              "rank": "책임매니저"
-            },
-            "memberCount": 5
-          },
-          {
-            "team": "플랜트회전기계설계팀",
-            "leader3": {
-              "name": "김범준",
-              "rank": "책임매니저"
-            },
-            "memberCount": 4
-          },
-          {
-            "team": "플랜트계장설계팀",
-            "leader3": {
-              "name": "장지현",
-              "rank": "책임매니저"
-            },
-            "memberCount": 2
-          },
-          {
-            "team": "플랜트토목설계팀",
-            "leader3": {
-              "name": "정성준",
-              "rank": "책임매니저"
-            },
-            "memberCount": 8
-          },
-          {
-            "team": "플랜트건축설계팀",
-            "leader3": {
-              "name": "노진옥",
-              "rank": "책임매니저"
-            },
-            "memberCount": 8
+            "memberCount": 9,
+            "section": "기본설계담당"
           },
           {
             "team": "플랜트HSE설계팀",
@@ -1512,7 +1522,74 @@ window.ORG_DATA = [
               "name": "박재석",
               "rank": "책임매니저"
             },
-            "memberCount": 19
+            "memberCount": 19,
+            "section": "기본설계담당"
+          },
+          {
+            "team": "플랜트설계검증팀",
+            "leader3": {
+              "name": "이근직",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9,
+            "section": "기본설계담당"
+          },
+          {
+            "team": "플랜트배관설계팀",
+            "leader3": null,
+            "memberCount": 7,
+            "section": "상세설계담당"
+          },
+          {
+            "team": "플랜트건축설계팀",
+            "leader3": {
+              "name": "노진옥",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8,
+            "section": "상세설계담당"
+          },
+          {
+            "team": "플랜트토목설계팀",
+            "leader3": {
+              "name": "정성준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8,
+            "section": "상세설계담당"
+          },
+          {
+            "team": "플랜트전기설계팀",
+            "leader3": null,
+            "memberCount": 5,
+            "section": "시스템설계담당"
+          },
+          {
+            "team": "플랜트계장설계팀",
+            "leader3": {
+              "name": "장지현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 2,
+            "section": "시스템설계담당"
+          },
+          {
+            "team": "플랜트회전기계설계팀",
+            "leader3": {
+              "name": "김범준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4,
+            "section": "시스템설계담당"
+          },
+          {
+            "team": "플랜트장치기계설계팀",
+            "leader3": {
+              "name": "김지함",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5,
+            "section": "시스템설계담당"
           },
           {
             "team": "NewEnergy설계팀",
@@ -1521,40 +1598,48 @@ window.ORG_DATA = [
               "rank": "책임매니저"
             },
             "memberCount": 40
+          }
+        ],
+        "sections": [
+          {
+            "name": "기본설계담당",
+            "leader": {
+              "name": "김형준",
+              "rank": "담당"
+            },
+            "teamNames": [
+              "플랜트설계관리팀",
+              "플랜트공정설계팀",
+              "플랜트HSE설계팀",
+              "플랜트설계검증팀"
+            ]
           },
           {
-            "team": "플랜트배관설계팀",
-            "leader3": null,
-            "memberCount": 7
+            "name": "상세설계담당",
+            "leader": {
+              "name": "박상균",
+              "rank": "담당"
+            },
+            "teamNames": [
+              "플랜트배관설계팀",
+              "플랜트건축설계팀",
+              "플랜트토목설계팀"
+            ]
           },
           {
-            "team": "플랜트설계관리팀",
-            "leader3": null,
-            "memberCount": 5
-          },
-          {
-            "team": "플랜트전기설계팀",
-            "leader3": null,
-            "memberCount": 5
+            "name": "시스템설계담당",
+            "leader": {
+              "name": "정현욱",
+              "rank": "담당"
+            },
+            "teamNames": [
+              "플랜트전기설계팀",
+              "플랜트계장설계팀",
+              "플랜트회전기계설계팀",
+              "플랜트장치기계설계팀"
+            ]
           }
         ]
-      }
-    ],
-    "subLeaders": [
-      {
-        "name": "김형준",
-        "title": "담당 (플랜트설계실)",
-        "rank": "책임매니저"
-      },
-      {
-        "name": "정현욱",
-        "title": "담당 (플랜트설계실)",
-        "rank": "책임매니저"
-      },
-      {
-        "name": "박상균",
-        "title": "담당 (플랜트설계실)",
-        "rank": "책임매니저"
       }
     ],
     "stats": {
@@ -3938,7 +4023,7 @@ const { useState, useMemo, useEffect, useRef, useCallback } = React;
 const ORG_INITIAL = window.ORG_DATA;
 const EXCLUSION_DATA = window.EXCLUSION_DATA || {};
 const EXCLUSION_META = window.EXCLUSION_META || {};
-const STORAGE_KEY = 'org-data-v11';
+const STORAGE_KEY = 'org-data-v13';
 const EXCLUSION_KEYS = ['대표이사', '자문역', '고문역', '사외이사', '컨틴전시플랜팀', '컨틴전시플랜팀(예비군대대)', '본사사옥', 'English Lab', '파견처', '비상근'];
 
 // ---------- Persistence ----------
@@ -4232,6 +4317,164 @@ function LeaderCell({ leader, q, kind, fallback = '—', editMode, onChangeName,
   );
 }
 
+// ---------- Branched L1 / Sectioned L2 ----------
+function BranchedL1Cell({ bonbu, totalRows, q, editMode, onChangeL1Name, onChangeL1Rank, trRefs, silRowMap }) {
+  const branches = bonbu.branchLeaders || [];
+  const wrapperRef = useRef(null);
+  const [positions, setPositions] = useState([]);
+
+  useEffect(() => {
+    if (branches.length === 0) return;
+    const compute = () => {
+      if (!wrapperRef.current) return;
+      const wrapperRect = wrapperRef.current.getBoundingClientRect();
+      const ps = branches.map(br => {
+        const ranges = br.sils.map(sn => silRowMap[sn]).filter(Boolean);
+        if (ranges.length === 0) return null;
+        const start = Math.min(...ranges.map(r => r[0]));
+        const end = Math.max(...ranges.map(r => r[1]));
+        const startTr = trRefs.current[start];
+        const endTr = trRefs.current[end];
+        if (!startTr || !endTr) return null;
+        const sRect = startTr.getBoundingClientRect();
+        const eRect = endTr.getBoundingClientRect();
+        return { top: sRect.top - wrapperRect.top, height: eRect.bottom - sRect.top };
+      });
+      setPositions(ps);
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    trRefs.current.forEach(tr => tr && ro.observe(tr));
+    if (wrapperRef.current) ro.observe(wrapperRef.current);
+    window.addEventListener('resize', compute);
+    return () => { ro.disconnect(); window.removeEventListener('resize', compute); };
+  }, [branches.length, totalRows]);
+
+  if (branches.length === 0) {
+    return (
+      <div className="l1-lanes l1-lanes-solo">
+        <div className="lane-main lane-l1-main">
+          <LeaderCell leader={bonbu.leader1} q={q} kind="l1" editMode={editMode}
+            onChangeName={onChangeL1Name} onChangeRank={onChangeL1Rank} />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div ref={wrapperRef} className="l1-lanes">
+      <div className="lane-main lane-l1-main">
+        <LeaderCell leader={bonbu.leader1} q={q} kind="l1" editMode={editMode}
+          onChangeName={onChangeL1Name} onChangeRank={onChangeL1Rank} />
+      </div>
+      {branches.map((br, j) => {
+        const p = positions[j];
+        return (
+          <div key={j} className="lane-branch lane-l1-branch"
+            style={p ? { top: `${p.top}px`, height: `${p.height}px` } : { display: 'none' }}>
+            <div className="leader">
+              <span className="leader-dot dot-l1" />
+              <div className="leader-text">
+                <div className="leader-name"><Hi text={br.name} q={q} /></div>
+                <div className="leader-rank">{br.rank}</div>
+                <div className="sub-leader-note">{br.title}{br.branch ? ` (${br.branch})` : ''}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SectionedL2Cell({ sil, totalRows, q, editMode, onChangeL2Name, onChangeL2Rank, trRefs, silStartIdx }) {
+  const definedSections = sil.sections || [];
+  const wrapperRef = useRef(null);
+  const [positions, setPositions] = useState([]);
+
+  // Build full sections list — include synthetic '공석' sections for teams not in any defined section
+  const sectionedTeamSet = new Set();
+  for (const s of definedSections) for (const tn of s.teamNames) sectionedTeamSet.add(tn);
+  const orphanTeams = sil.teams.filter(t => !sectionedTeamSet.has(t.team));
+  const allSections = [...definedSections];
+  for (const t of orphanTeams) {
+    allSections.push({ name: '', leader: { name: '공석', rank: '' }, teamNames: [t.team], _placeholder: true });
+  }
+
+  const teamRowMap = {};
+  sil.teams.forEach((t, idx) => { teamRowMap[t.team] = silStartIdx + idx; });
+
+  useEffect(() => {
+    if (allSections.length === 0) return;
+    const compute = () => {
+      if (!wrapperRef.current) return;
+      const wrapperRect = wrapperRef.current.getBoundingClientRect();
+      const ps = allSections.map(sec => {
+        const idxs = sec.teamNames.map(tn => teamRowMap[tn]).filter(v => v != null);
+        if (idxs.length === 0) return null;
+        const start = Math.min(...idxs);
+        const end = Math.max(...idxs);
+        const startTr = trRefs.current[start];
+        const endTr = trRefs.current[end];
+        if (!startTr || !endTr) return null;
+        const sRect = startTr.getBoundingClientRect();
+        const eRect = endTr.getBoundingClientRect();
+        return { top: sRect.top - wrapperRect.top, height: eRect.bottom - sRect.top };
+      });
+      setPositions(ps);
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    trRefs.current.forEach(tr => tr && ro.observe(tr));
+    if (wrapperRef.current) ro.observe(wrapperRef.current);
+    window.addEventListener('resize', compute);
+    return () => { ro.disconnect(); window.removeEventListener('resize', compute); };
+  }, [allSections.length, totalRows, silStartIdx]);
+
+  if (definedSections.length === 0) {
+    return (
+      <div className="l2-lanes l2-lanes-solo">
+        <div className="lane-main lane-l2-main">
+          <LeaderCell leader={sil.leader2} q={q} kind="l2" fallback="공석" editMode={editMode}
+            onChangeName={onChangeL2Name} onChangeRank={onChangeL2Rank} />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div ref={wrapperRef} className="l2-lanes">
+      <div className="lane-main lane-l2-main">
+        <LeaderCell leader={sil.leader2} q={q} kind="l2" fallback="공석" editMode={editMode}
+          onChangeName={onChangeL2Name} onChangeRank={onChangeL2Rank} />
+      </div>
+      {allSections.map((sec, j) => {
+        const p = positions[j];
+        return (
+          <div key={j} className={'lane-branch lane-l2-branch' + (sec._placeholder ? ' is-vacant' : '')}
+            style={p ? { top: `${p.top}px`, height: `${p.height}px` } : { display: 'none' }}>
+            {sec._placeholder ? (
+              <div className="leader">
+                <span className="leader-dot dot-l2" style={{opacity: 0.4}} />
+                <div className="leader-text">
+                  <div className="leader-name leader-vacant">공석</div>
+                </div>
+              </div>
+            ) : (
+              <div className="leader">
+                <span className="leader-dot dot-l1" />
+                <div className="leader-text">
+                  <div className="leader-name"><Hi text={sec.leader.name} q={q} /></div>
+                  <div className="leader-rank">{sec.leader.rank}</div>
+                  <div className="sub-leader-note">{sec.name}</div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ---------- Table view ----------
 function TableView({ org, highlight, editMode, updateOrg }) {
   return (
@@ -4269,6 +4512,21 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
   const teamRows = [];
   b.sils.forEach(s => s.teams.forEach((t, ti) => teamRows.push({ s, t, firstOfSil: ti === 0, silCount: s.teams.length })));
   const totalRows = Math.max(teamRows.length, 1);
+
+  const trRefs = useRef([]);
+  trRefs.current.length = totalRows;
+
+  // Map sil -> [startRow, endRow] absolute team-row indices within this bonbu
+  const silRowMap = {};
+  const silStartMap = {};
+  {
+    let idx = 0;
+    for (const s of b.sils) {
+      silRowMap[s.sil] = [idx, idx + s.teams.length - 1];
+      silStartMap[s.sil] = idx;
+      idx += s.teams.length;
+    }
+  }
 
   const setBonbu = (path, value) => updateOrg(o => {
     const bb = o.find(x => x.bonbu === b.bonbu);
@@ -4324,7 +4582,7 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
         const silIdx = findSilIdx(r.s.sil);
         const teamIdx = findTeamIdx(r.s.sil, r.t.team);
         return (
-          <tr key={i} className={(isBonbuFirst ? 'bonbu-start ' : '') + (isSilFirst ? 'sil-start' : '')}>
+          <tr key={i} ref={el => trRefs.current[i] = el} className={(isBonbuFirst ? 'bonbu-start ' : '') + (isSilFirst ? 'sil-start' : '')}>
             {isBonbuFirst && (
               <td className="cell-bonbu" rowSpan={totalRows}>
                 <BonbuCellContent b={b} q={highlight} editMode={editMode} onChange={(v) => setBonbu(['bonbu'], v)} />
@@ -4352,9 +4610,16 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
             </td>
             {isBonbuFirst && (
               <td className="cell-l1" rowSpan={totalRows}>
-                <LeaderCell leader={b.leader1} q={highlight} kind="l1" editMode={editMode}
-                  onChangeName={(v) => setL1('name', v)}
-                  onChangeRank={(v) => setL1('rank', v)} />
+                <BranchedL1Cell
+                  bonbu={b}
+                  totalRows={totalRows}
+                  q={highlight}
+                  editMode={editMode}
+                  onChangeL1Name={(v) => setL1('name', v)}
+                  onChangeL1Rank={(v) => setL1('rank', v)}
+                  trRefs={trRefs}
+                  silRowMap={silRowMap}
+                />
                 {b.subLeaders && b.subLeaders.map((sl, j) => (
                   <div key={j} className="sub-leader">
                     <div className="leader">
@@ -4373,9 +4638,16 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
             )}
             {isSilFirst && (
               <td className="cell-l2" rowSpan={r.silCount}>
-                <LeaderCell leader={r.s.leader2} q={highlight} kind="l2" fallback="공석" editMode={editMode}
-                  onChangeName={(v) => setSil(silIdx, 'leader2.name', v)}
-                  onChangeRank={(v) => setSil(silIdx, 'leader2.rank', v)} />
+                <SectionedL2Cell
+                  sil={r.s}
+                  totalRows={r.silCount}
+                  q={highlight}
+                  editMode={editMode}
+                  onChangeL2Name={(v) => setSil(silIdx, 'leader2.name', v)}
+                  onChangeL2Rank={(v) => setSil(silIdx, 'leader2.rank', v)}
+                  trRefs={trRefs}
+                  silStartIdx={silStartMap[r.s.sil]}
+                />
               </td>
             )}
             <td className="cell-l3">

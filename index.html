@@ -1,0 +1,4717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>본사 리더 명단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+<style>
+:root {
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-2: #f5f4ef;
+  --border: #e6e3db;
+  --border-strong: #d5d1c5;
+  --text: #1a1816;
+  --text-2: #545049;
+  --text-3: #8b867d;
+  --muted: #b3aea2;
+
+  --accent: oklch(0.48 0.12 265);
+  --accent-soft: oklch(0.95 0.02 265);
+  --accent-text: oklch(0.35 0.14 265);
+
+  --l1: oklch(0.50 0.13 35);
+  --l1-bg: oklch(0.96 0.02 35);
+  --l2: oklch(0.48 0.12 265);
+  --l2-bg: oklch(0.96 0.02 265);
+  --l3: oklch(0.50 0.10 175);
+  --l3-bg: oklch(0.96 0.02 175);
+
+  --warn: oklch(0.58 0.16 30);
+  --warn-bg: oklch(0.97 0.02 30);
+
+  --header-h: 78px;
+
+  --shadow-sm: 0 1px 2px rgba(20, 18, 14, 0.04);
+  --shadow: 0 2px 8px rgba(20, 18, 14, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+#root { min-height: 100vh; }
+
+.app {
+  display: grid;
+  grid-template-columns: 256px 1fr;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 14px 24px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 20;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 18px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.brand-mark {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  display: grid; place-items: center;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+.brand-title { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+.brand-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.nav {
+  display: flex; flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+.nav-item {
+  all: unset; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px; border-radius: 6px;
+  font-size: 13px; color: var(--text-2);
+  transition: background 0.12s, color 0.12s;
+}
+.nav-item:hover { background: var(--surface-2); color: var(--text); }
+.nav-item.is-active { background: var(--text); color: var(--surface); }
+.nav-item.is-active .nav-count { color: rgba(255,255,255,0.7); }
+.nav-label { font-weight: 500; letter-spacing: -0.01em; }
+.nav-count { font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; font-weight: 500; }
+.nav-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+
+.legend {
+  margin-top: 18px;
+  padding: 12px 10px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.legend-title { font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em; }
+.legend-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; line-height: 1.4; }
+.chip {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 1px 6px; border-radius: 3px; flex-shrink: 0;
+}
+.chip-l1 { background: var(--l1-bg); color: var(--l1); }
+.chip-l2 { background: var(--l2-bg); color: var(--l2); }
+.chip-l3 { background: var(--l3-bg); color: var(--l3); }
+
+/* ---------- Main ---------- */
+.main { display: flex; flex-direction: column; min-width: 0; }
+
+.header {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px;
+  padding: 18px 32px 14px;
+  background: rgba(250, 250, 247, 0.94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  min-height: var(--header-h);
+}
+.crumb { display: flex; gap: 6px; font-size: 12px; color: var(--text-3); margin-bottom: 4px; }
+.crumb-sep { color: var(--muted); }
+.crumb-current { color: var(--text-2); font-weight: 500; }
+.title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+
+.header-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.search {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px; height: 34px;
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: 6px;
+  width: 220px; color: var(--text-3);
+  transition: border 0.12s;
+}
+.search:focus-within { border-color: var(--accent); color: var(--text); }
+.search input { all: unset; flex: 1; font-size: 13px; color: var(--text); font-family: inherit; }
+.search input::placeholder { color: var(--text-3); }
+.search-clear {
+  all: unset; cursor: pointer; width: 18px; height: 18px;
+  border-radius: 4px; display: grid; place-items: center;
+  color: var(--text-3); font-size: 16px; line-height: 1;
+}
+.search-clear:hover { background: var(--surface-2); color: var(--text); }
+
+.view-toggle {
+  display: flex; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px;
+}
+.view-toggle button {
+  all: unset; cursor: pointer;
+  padding: 4px 12px; font-size: 12px; color: var(--text-3);
+  border-radius: 4px; font-weight: 500; transition: all 0.12s;
+}
+.view-toggle button.is-active { background: var(--text); color: var(--surface); }
+
+.btn-ghost, .btn-primary {
+  all: unset; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 12px; height: 34px;
+  border-radius: 6px;
+  font-size: 12px; font-weight: 500;
+  transition: all 0.12s;
+}
+.btn-ghost {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-2);
+}
+.btn-ghost:hover { border-color: var(--border-strong); color: var(--text); }
+.btn-ghost.is-on {
+  background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text);
+}
+.btn-warn { color: var(--warn) !important; }
+.btn-warn:hover { background: var(--warn-bg); border-color: var(--warn) !important; }
+.btn-primary {
+  background: var(--text); color: var(--surface);
+  border: 1px solid var(--text);
+}
+.btn-primary:hover { background: #000; }
+
+/* ---------- Content ---------- */
+.content { padding: 20px 32px 40px; flex: 1; min-width: 0; }
+.empty { padding: 60px 0; text-align: center; color: var(--text-3); font-size: 14px; }
+
+/* ---------- Table ---------- */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: visible;
+  box-shadow: var(--shadow-sm);
+}
+.org-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  table-layout: fixed;
+}
+.org-table thead {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 10;
+}
+.org-table thead th {
+  background: var(--surface-2);
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-2);
+  letter-spacing: -0.01em;
+  vertical-align: top;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-strong);
+  box-shadow: 0 1px 0 var(--border-strong);
+}
+.org-table thead th:first-child { border-top-left-radius: 10px; }
+.org-table thead th:last-child { border-top-right-radius: 10px; border-right: 0; }
+.th-center { text-align: center !important; }
+.th-chip {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 2px 6px; border-radius: 3px;
+}
+.th-sub {
+  display: block; margin-top: 4px;
+  font-size: 10px; font-weight: 400; color: var(--text-3);
+  letter-spacing: 0; line-height: 1.3;
+}
+
+.org-table tbody td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: top;
+  background: var(--surface);
+}
+.org-table tbody td:last-child { border-right: 0; }
+.org-table tbody tr.bonbu-start td { border-top: 2px solid var(--border-strong); }
+.org-table tbody tr.sil-start td:not(.cell-bonbu) { border-top-color: var(--border); }
+.org-table tbody tr:first-child td { border-top: 0; }
+
+.cell-bonbu {
+  background: var(--surface-2) !important;
+  border-right: 1px solid var(--border-strong) !important;
+}
+.bonbu-cell { padding: 4px 0; }
+.bonbu-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--text); letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.bonbu-meta {
+  font-size: 11px; color: var(--text-3);
+  display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+}
+.dot-sep { color: var(--muted); }
+.bonbu-breakdown {
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--text-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: baseline;
+  line-height: 1.4;
+}
+.bonbu-breakdown .bb-l1 { color: var(--l1); font-weight: 500; }
+.bonbu-breakdown .bb-l2 { color: var(--l2); font-weight: 500; }
+.bonbu-breakdown .bb-l3 { color: var(--l3); font-weight: 500; }
+.bonbu-breakdown .bb-staff { color: var(--text-2); font-weight: 500; }
+.bonbu-breakdown .bb-sep { color: var(--muted); }
+
+.cell-sil { background: #fdfcfa; }
+.sil-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  padding: 2px 0;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.sil-name.is-direct { color: var(--text-2); font-style: italic; }
+.badge-direct {
+  font-size: 9px; padding: 1px 5px;
+  background: var(--surface-2); color: var(--text-3);
+  border-radius: 3px; font-weight: 500; letter-spacing: 0.02em;
+  font-style: normal;
+}
+.cell-team .team-name { font-size: 13px; color: var(--text); padding: 2px 0; }
+
+.cell-count {
+  text-align: center !important;
+  font-variant-numeric: tabular-nums;
+}
+.member-count {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.leader { display: flex; align-items: flex-start; gap: 8px; padding: 2px 0; }
+.leader-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+.dot-l1, .leader-dot.dot-l1 { background: var(--l1); }
+.dot-l2, .leader-dot.dot-l2 { background: var(--l2); }
+.dot-l3, .leader-dot.dot-l3 { background: var(--l3); }
+.leader-text { min-width: 0; flex: 1; }
+.leader-name {
+  font-weight: 600; font-size: 13px; color: var(--text);
+  letter-spacing: -0.01em;
+}
+.leader-rank { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.leader-empty { color: var(--muted); font-size: 12px; }
+.cell-empty { color: var(--muted); font-size: 12px; text-align: center; }
+
+.sub-leader {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.sub-leader-note { font-size: 10px; color: var(--text-3); margin-top: 2px; font-style: italic; }
+
+mark { background: oklch(0.92 0.10 95); color: var(--text); padding: 0 1px; border-radius: 2px; }
+
+/* ---------- Editable ---------- */
+.edit-mode .editable {
+  display: inline-block;
+  min-width: 24px;
+  padding: 0 4px;
+  margin: 0 -4px;
+  border-radius: 4px;
+  outline: 1px dashed var(--border-strong);
+  outline-offset: 1px;
+  cursor: text;
+  transition: outline-color 0.12s, background 0.12s;
+}
+.edit-mode .editable:hover { outline-color: var(--accent); background: var(--accent-soft); }
+.edit-mode .editable.is-editing { outline: 2px solid var(--accent); background: var(--surface); }
+.edit-mode .editable.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+}
+.edit-mode .leader-add { opacity: 0.6; }
+
+/* ---------- Grid View ---------- */
+.grid-view {
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+}
+.card-bonbu {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.card-bonbu-head {
+  padding: 16px 18px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; gap: 16px;
+}
+.card-bonbu-title { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+.card-bonbu-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.card-bonbu-l1 { text-align: right; }
+.card-l1-label {
+  font-size: 10px; font-weight: 600; color: var(--l1);
+  margin-bottom: 2px; letter-spacing: 0.02em;
+}
+.card-l1-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.card-l1-name.muted { color: var(--muted); }
+.card-l1-rank { font-size: 11px; color: var(--text-3); font-weight: 400; margin-left: 4px; }
+.card-sub-note { font-size: 10px; color: var(--text-3); font-style: italic; margin-top: 1px; }
+
+.card-sils { padding: 8px 0; }
+.card-sil { padding: 12px 18px; border-top: 1px solid var(--border); }
+.card-sil:first-child { border-top: 0; }
+.card-sil-head { margin-bottom: 6px; }
+.card-sil-name {
+  font-size: 13px; font-weight: 600; letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 6px;
+}
+.card-sil.is-direct .card-sil-name { font-style: italic; color: var(--text-2); }
+.card-sil-l2 {
+  font-size: 11px; color: var(--text-2); margin-top: 2px;
+  display: flex; align-items: center; gap: 5px;
+}
+.dot { width: 5px; height: 5px; border-radius: 50%; }
+.muted { color: var(--text-3); }
+
+.card-teams { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; }
+.card-teams li {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 6px 10px; border-radius: 5px;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+.card-team-name { color: var(--text-2); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.card-team-cnt {
+  font-size: 10px; font-weight: 600;
+  padding: 1px 6px;
+  background: var(--surface);
+  color: var(--text-2);
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.card-team-l3 {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text); font-weight: 600;
+}
+
+/* ---------- Stat tones ---------- */
+.stat-l1 .stat-value { color: var(--l1); }
+.stat-l2 .stat-value { color: var(--l2); }
+.stat-l3 .stat-value { color: var(--l3); }
+
+/* ---------- Exclusions Modal ---------- */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(20, 18, 14, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: grid; place-items: center;
+  padding: 32px;
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 920px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.modal-head {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px;
+}
+.modal-title {
+  font-size: 16px; font-weight: 600;
+  letter-spacing: -0.02em; color: var(--text);
+}
+.modal-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.modal-close {
+  all: unset; cursor: pointer;
+  width: 32px; height: 32px;
+  border-radius: 6px; display: grid; place-items: center;
+  font-size: 22px; color: var(--text-3);
+  font-weight: 300;
+}
+.modal-close:hover { background: var(--surface-2); color: var(--text); }
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  flex: 1;
+  min-height: 0;
+}
+.modal-tabs {
+  border-right: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 8px;
+  display: flex; flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+}
+.modal-tab {
+  all: unset; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 500;
+  transition: background 0.12s, color 0.12s;
+}
+.modal-tab:hover { background: var(--surface); color: var(--text); }
+.modal-tab.is-active {
+  background: var(--text);
+  color: var(--surface);
+}
+.modal-tab.is-active .modal-tab-count { color: rgba(255,255,255,0.7); }
+.modal-tab-count {
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.modal-tab-group { display: flex; flex-direction: column; gap: 1px; margin-bottom: 8px; }
+.modal-tab-group:last-child { margin-bottom: 0; }
+.modal-tab-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+  padding: 8px 12px 4px;
+  text-transform: uppercase;
+}
+
+.modal-content {
+  padding: 18px 24px 24px;
+  overflow-y: auto;
+}
+.modal-section-head {
+  display: flex; align-items: baseline; gap: 10px;
+  margin-bottom: 4px;
+}
+.modal-section-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.modal-section-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.modal-section-note {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+.modal-empty {
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--surface-2);
+  border-radius: 8px;
+  color: var(--text-3);
+  font-size: 13px;
+}
+.modal-empty-icon {
+  font-size: 32px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.modal-empty-sub {
+  font-size: 11px;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.modal-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  position: sticky; top: 0;
+}
+.modal-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+.modal-table tbody tr:hover td { background: var(--surface-2); }
+.modal-tnum {
+  color: var(--text-3) !important;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+.modal-tname { font-weight: 600; }
+.modal-tdept { color: var(--text-2); font-size: 12px; }
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 18px 32px 24px;
+  background: var(--surface);
+}
+.footer-stats { display: flex; gap: 28px; margin-bottom: 8px; flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; }
+.stat-value {
+  font-size: 22px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text); letter-spacing: -0.02em; line-height: 1;
+}
+.stat-label { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+.footer-note { font-size: 11px; color: var(--text-3); margin-top: 8px; }
+
+/* ---------- Print ---------- */
+@media print {
+  .sidebar, .header, .footer, .view-toggle, .btn-ghost, .btn-primary, .search, .modal-backdrop { display: none !important; }
+  .app { display: block; }
+  .content { padding: 16px; }
+  .org-table { font-size: 10px; }
+  .org-table th, .org-table td { padding: 6px 8px; }
+  .org-table thead { position: static !important; }
+  body { background: white; }
+  .table-wrap { box-shadow: none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .header { flex-direction: column; align-items: stretch; padding: 16px; }
+  .header-r { flex-wrap: wrap; }
+  .content { padding: 16px; }
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script>
+// 본사 조직별 리더 데이터 (2026-05-18 기준)
+window.ORG_DATA = [
+  {
+    "bonbu": "대표이사실",
+    "leader1": null,
+    "sils": [
+      {
+        "sil": "보안운영실",
+        "leader2": {
+          "name": "김현민",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "시스템보안팀",
+            "leader3": {
+              "name": "이종혁",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "보안대응팀",
+            "leader3": null,
+            "memberCount": 5
+          }
+        ]
+      },
+      {
+        "sil": "IR담당",
+        "leader2": {
+          "name": "위윤희",
+          "rank": "담당"
+        },
+        "teams": [
+          {
+            "team": "지속가능경영팀",
+            "leader3": {
+              "name": "김세원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "IR팀",
+            "leader3": {
+              "name": "문선웅",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 35,
+      "l1": 1,
+      "l2": 1,
+      "l3": 3,
+      "staff": 30
+    }
+  },
+  {
+    "bonbu": "토목사업본부",
+    "leader1": {
+      "name": "임낙호",
+      "title": "본부장",
+      "rank": "상무"
+    },
+    "sils": [
+      {
+        "sil": "토목영업실",
+        "leader2": {
+          "name": "김기영",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "해상풍력사업팀",
+            "leader3": {
+              "name": "임성엽",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "토목해외영업팀",
+            "leader3": {
+              "name": "박우영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "토목국내영업팀",
+            "leader3": {
+              "name": "나현주",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "토목민자사업팀",
+            "leader3": {
+              "name": "정철화",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          }
+        ]
+      },
+      {
+        "sil": "토목견적실",
+        "leader2": {
+          "name": "이용정",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "토목해외견적1팀",
+            "leader3": {
+              "name": "지정묵",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "토목해외견적2팀",
+            "leader3": {
+              "name": "박용재",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "토목국내견적팀",
+            "leader3": {
+              "name": "권계환",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "토목건축기전팀",
+            "leader3": {
+              "name": "김태완",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "토목설계실",
+        "leader2": {
+          "name": "송현섭",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "토목인프라설계팀",
+            "leader3": {
+              "name": "배용석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "토목교량설계팀",
+            "leader3": {
+              "name": "윤의택",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "토목지하공간설계팀",
+            "leader3": {
+              "name": "박준호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "토목해양항만설계팀",
+            "leader3": {
+              "name": "정석록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 14
+          }
+        ]
+      },
+      {
+        "sil": "토목사업기획실",
+        "leader2": {
+          "name": "김영삼",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "토목경영지원팀",
+            "leader3": {
+              "name": "남성민",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "토목예산팀",
+            "leader3": {
+              "name": "오형록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "토목계약관리팀",
+            "leader3": {
+              "name": "조건희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "토목안전협력팀",
+            "leader3": {
+              "name": "김진산",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "토목품질팀",
+            "leader3": {
+              "name": "옥영기",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "토목NFS팀",
+            "leader3": {
+              "name": "이정헌",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 194,
+      "l1": 1,
+      "l2": 4,
+      "l3": 18,
+      "staff": 166
+    }
+  },
+  {
+    "bonbu": "건축주택사업본부",
+    "leader1": {
+      "name": "이인기",
+      "title": "본부장",
+      "rank": "전무"
+    },
+    "subLeaders": [
+      {
+        "name": "임지홍",
+        "title": "사업부장 (건축사업부)",
+        "rank": "상무"
+      }
+    ],
+    "sils": [
+      {
+        "sil": "건축주택사업기획실",
+        "leader2": {
+          "name": "조혁준",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축주택예산팀",
+            "leader3": {
+              "name": "신현수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "건축주택경영지원팀",
+            "leader3": {
+              "name": "김춘기",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
+          },
+          {
+            "team": "건축주택수익성개선팀",
+            "leader3": {
+              "name": "강성묵",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      },
+      {
+        "sil": "건축사업실",
+        "leader2": {
+          "name": "김동원",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축사업팀",
+            "leader3": {
+              "name": "강한웅",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "건축설계팀",
+            "leader3": {
+              "name": "이기수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "글로벌데이터센터팀",
+            "leader3": {
+              "name": "권성엽",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          }
+        ]
+      },
+      {
+        "sil": "주택설계실",
+        "leader2": {
+          "name": "최광호",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "주택설계팀",
+            "leader3": {
+              "name": "이상민",
+              "rank": "책임매니저"
+            },
+            "memberCount": 20
+          },
+          {
+            "team": "인테리어팀",
+            "leader3": {
+              "name": "윤지훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "익스테리어팀",
+            "leader3": {
+              "name": "박현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
+          }
+        ]
+      },
+      {
+        "sil": "건축주택기술실",
+        "leader2": {
+          "name": "박상준",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축주택설비팀",
+            "leader3": {
+              "name": "홍정표",
+              "rank": "책임매니저"
+            },
+            "memberCount": 25
+          },
+          {
+            "team": "건축주택전기통신팀",
+            "leader3": {
+              "name": "형정안",
+              "rank": "책임매니저"
+            },
+            "memberCount": 24
+          },
+          {
+            "team": "건축주택토목팀",
+            "leader3": {
+              "name": "박정우",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "건축주택견적실",
+        "leader2": {
+          "name": "양하영",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "건축국내견적팀",
+            "leader3": {
+              "name": "정인걸",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "건축해외견적팀",
+            "leader3": {
+              "name": "신천균",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "주택견적팀",
+            "leader3": {
+              "name": "김효관",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "건축주택수행실",
+        "leader2": {
+          "name": "최원희",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축주택수행팀",
+            "leader3": {
+              "name": "강석찬",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "건축주택프리콘팀",
+            "leader3": {
+              "name": "김영록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "건축주택품질팀",
+            "leader3": {
+              "name": "박대묵",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "건축주택안전협력팀",
+            "leader3": {
+              "name": "강기호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          }
+        ]
+      },
+      {
+        "sil": "브랜드전략실",
+        "leader2": {
+          "name": "오승민",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "브랜드마케팅팀",
+            "leader3": {
+              "name": "김광희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "민간사업관리팀",
+            "leader3": {
+              "name": "오근규",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "주택분양팀",
+            "leader3": {
+              "name": "최진욱",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      },
+      {
+        "sil": "도시미래가치사업1실",
+        "leader2": {
+          "name": "신국현",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "도시미래가치사업기획팀",
+            "leader3": {
+              "name": "박경록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 14
+          },
+          {
+            "team": "도시미래가치사업1팀",
+            "leader3": {
+              "name": "김희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "도시미래가치사업2팀",
+            "leader3": {
+              "name": "홍승호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "압구정재건축사업팀",
+            "leader3": {
+              "name": "박성하",
+              "rank": "책임매니저"
+            },
+            "memberCount": 22
+          }
+        ]
+      },
+      {
+        "sil": "도시미래가치사업2실",
+        "leader2": {
+          "name": "이대성",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "도시미래가치사업3팀",
+            "leader3": {
+              "name": "박영국",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "도시미래가치사업4팀",
+            "leader3": {
+              "name": "김시엽",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "도시미래가치구현실",
+        "leader2": {
+          "name": "김성관",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "도시미래가치구현1팀",
+            "leader3": {
+              "name": "이한성",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "도시미래가치구현2팀",
+            "leader3": {
+              "name": "오창용",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "더뉴하우스팀",
+            "leader3": {
+              "name": "이형덕",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 443,
+      "l1": 3,
+      "l2": 10,
+      "l3": 31,
+      "staff": 393
+    }
+  },
+  {
+    "bonbu": "플랜트사업본부",
+    "leader1": {
+      "name": "이상배",
+      "title": "본부장",
+      "rank": "전무"
+    },
+    "sils": [
+      {
+        "sil": "플랜트사업기획실",
+        "leader2": {
+          "name": "윤영근",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "플랜트경영지원팀",
+            "leader3": {
+              "name": "최중혁",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "플랜트수익성개선팀",
+            "leader3": {
+              "name": "박성민",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "플랜트스마트솔루션팀",
+            "leader3": {
+              "name": "장재원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "플랜트수주영업실",
+        "leader2": {
+          "name": "심보현",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "오일&가스영업팀",
+            "leader3": {
+              "name": "정효석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "GX수소&암모니아영업팀",
+            "leader3": {
+              "name": "유희영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "수전해사업개발팀",
+            "leader3": {
+              "name": "백경래",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4
+          },
+          {
+            "team": "기자재견적팀",
+            "leader3": {
+              "name": "최동철",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "플랜트구매지원팀",
+            "leader3": {
+              "name": "편성욱",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "플랜트구매품질팀",
+            "leader3": {
+              "name": "유요석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 14
+          },
+          {
+            "team": "SAF사업추진팀(S)",
+            "leader3": {
+              "name": "방영택",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "플랜트수행실",
+        "leader2": {
+          "name": "한재형",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "플랜트수행팀",
+            "leader3": {
+              "name": "박운정",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "플랜트시운전팀",
+            "leader3": {
+              "name": "박종명",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "플랜트품질팀",
+            "leader3": {
+              "name": "김영곤",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "플랜트안전협력팀",
+            "leader3": {
+              "name": "안성균",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4
+          },
+          {
+            "team": "플랜트기계배관견적팀",
+            "leader3": {
+              "name": "강서구",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "플랜트전기계장견적팀",
+            "leader3": {
+              "name": "임현수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "플랜트토목건축견적팀",
+            "leader3": {
+              "name": "류지희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          }
+        ]
+      },
+      {
+        "sil": "플랜트설계실",
+        "leader2": {
+          "name": "황경하",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "플랜트공정설계팀",
+            "leader3": {
+              "name": "장경곤",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "플랜트설계검증팀",
+            "leader3": {
+              "name": "이근직",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "플랜트장치기계설계팀",
+            "leader3": {
+              "name": "김지함",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "플랜트회전기계설계팀",
+            "leader3": {
+              "name": "김범준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4
+          },
+          {
+            "team": "플랜트계장설계팀",
+            "leader3": {
+              "name": "장지현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 2
+          },
+          {
+            "team": "플랜트토목설계팀",
+            "leader3": {
+              "name": "정성준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "플랜트건축설계팀",
+            "leader3": {
+              "name": "노진옥",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "플랜트HSE설계팀",
+            "leader3": {
+              "name": "박재석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
+          },
+          {
+            "team": "NewEnergy설계팀",
+            "leader3": {
+              "name": "차동준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 40
+          },
+          {
+            "team": "플랜트배관설계팀",
+            "leader3": null,
+            "memberCount": 7
+          },
+          {
+            "team": "플랜트설계관리팀",
+            "leader3": null,
+            "memberCount": 5
+          },
+          {
+            "team": "플랜트전기설계팀",
+            "leader3": null,
+            "memberCount": 5
+          }
+        ]
+      }
+    ],
+    "subLeaders": [
+      {
+        "name": "김형준",
+        "title": "담당 (플랜트설계실)",
+        "rank": "책임매니저"
+      },
+      {
+        "name": "정현욱",
+        "title": "담당 (플랜트설계실)",
+        "rank": "책임매니저"
+      },
+      {
+        "name": "박상균",
+        "title": "담당 (플랜트설계실)",
+        "rank": "책임매니저"
+      }
+    ],
+    "stats": {
+      "total": 269,
+      "l1": 4,
+      "l2": 4,
+      "l3": 26,
+      "staff": 233
+    }
+  },
+  {
+    "bonbu": "NewEnergy사업부",
+    "leader1": {
+      "name": "최영",
+      "title": "사업부장",
+      "rank": "전무"
+    },
+    "sils": [
+      {
+        "sil": "NewEnergy사업기획실",
+        "leader2": {
+          "name": "안찬호",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "NewEnergy기획팀",
+            "leader3": {
+              "name": "박준영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 24
+          },
+          {
+            "team": "NewEnergy전략팀",
+            "leader3": {
+              "name": "임성택",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "원자력수행팀",
+            "leader3": {
+              "name": "김정헌",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "GreenEnergy사업개발팀(S)",
+            "leader3": null,
+            "memberCount": 4
+          },
+          {
+            "team": "NBX팀(S)",
+            "leader3": null,
+            "memberCount": 11
+          }
+        ]
+      },
+      {
+        "sil": "NuclearSolution실",
+        "leader2": {
+          "name": "신달원",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "원자력영업팀",
+            "leader3": {
+              "name": "김근호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "원자력견적팀",
+            "leader3": {
+              "name": "강성진",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "북미/SMR팀",
+            "leader3": {
+              "name": "이기원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          }
+        ]
+      },
+      {
+        "sil": "ECO-One사업실",
+        "leader2": {
+          "name": "최용석",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "ECO-Grid영업팀",
+            "leader3": {
+              "name": "김성규",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "ECO-One수행팀",
+            "leader3": {
+              "name": "진병욱",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "신재생사업팀",
+            "leader3": {
+              "name": "심성보",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 122,
+      "l1": 1,
+      "l2": 3,
+      "l3": 9,
+      "staff": 109
+    }
+  },
+  {
+    "bonbu": "안전품질본부",
+    "leader1": {
+      "name": "신재점",
+      "title": "본부장",
+      "rank": "상무"
+    },
+    "sils": [
+      {
+        "sil": "안전기획실",
+        "leader2": {
+          "name": "임병천",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "안전기획팀",
+            "leader3": {
+              "name": "엄승진",
+              "rank": "책임매니저"
+            },
+            "memberCount": 17
+          },
+          {
+            "team": "안전시스템운영팀",
+            "leader3": {
+              "name": "허승",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "안전수행평가팀",
+            "leader3": {
+              "name": "최성훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "안전예산팀",
+            "leader3": {
+              "name": "박규태",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4
+          }
+        ]
+      },
+      {
+        "sil": "안전수행지원실",
+        "leader2": {
+          "name": "김제영",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "안전진단팀",
+            "leader3": {
+              "name": "임광태",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "안전패트롤팀",
+            "leader3": {
+              "name": "정중양",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "환경관리팀",
+            "leader3": {
+              "name": "곽훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "장비안전팀",
+            "leader3": {
+              "name": "배영록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          }
+        ]
+      },
+      {
+        "sil": "품질관리실",
+        "leader2": {
+          "name": "박준철",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "품질기획팀",
+            "leader3": {
+              "name": "이승일",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "품질시스템운영팀",
+            "leader3": {
+              "name": "남궁한신",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "품질진단팀",
+            "leader3": {
+              "name": "최승현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 18
+          }
+        ]
+      },
+      {
+        "sil": "H서비스센터",
+        "leader2": {
+          "name": "윤성우",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "H서비스지원팀",
+            "leader3": {
+              "name": "강경석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "H서비스신속대응팀",
+            "leader3": {
+              "name": "최형근",
+              "rank": "책임매니저"
+            },
+            "memberCount": 43
+          },
+          {
+            "team": "H서비스High-End주거관리팀",
+            "leader3": {
+              "name": "강동훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 24
+          },
+          {
+            "team": "H서비스High-Tech건축관리팀",
+            "leader3": {
+              "name": "최진혁",
+              "rank": "책임매니저"
+            },
+            "memberCount": 14
+          },
+          {
+            "team": "H서비스중부팀",
+            "leader3": {
+              "name": "한형동",
+              "rank": "책임매니저"
+            },
+            "memberCount": 23
+          },
+          {
+            "team": "H서비스남부팀",
+            "leader3": {
+              "name": "박정욱",
+              "rank": "책임매니저"
+            },
+            "memberCount": 30
+          },
+          {
+            "team": "H서비스동부팀",
+            "leader3": {
+              "name": "박효수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 54
+          },
+          {
+            "team": "H서비스서부팀",
+            "leader3": {
+              "name": "김성철",
+              "rank": "책임매니저"
+            },
+            "memberCount": 47
+          }
+        ]
+      },
+      {
+        "sil": "안전품질전략팀",
+        "leader2": null,
+        "directTeam": true,
+        "teams": [
+          {
+            "team": "안전품질전략팀",
+            "leader3": {
+              "name": "윤중훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 378,
+      "l1": 1,
+      "l2": 4,
+      "l3": 20,
+      "staff": 353
+    }
+  },
+  {
+    "bonbu": "개발사업부",
+    "leader1": {
+      "name": "이동훈",
+      "title": "사업부장",
+      "rank": "상무"
+    },
+    "sils": [
+      {
+        "sil": "에너지인프라Biz개발실",
+        "leader2": {
+          "name": "백상현",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "인프라Biz팀",
+            "leader3": {
+              "name": "조관희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "개발금융Biz팀",
+            "leader3": {
+              "name": "이웅로",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "에너지플랫폼Biz팀",
+            "leader3": {
+              "name": "송기섭",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "에너지환경Biz팀",
+            "leader3": {
+              "name": "김현준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      },
+      {
+        "sil": "민간Biz개발실",
+        "leader2": {
+          "name": "송훈종",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "민간Biz1팀",
+            "leader3": {
+              "name": "권용성",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "민간Biz2팀",
+            "leader3": {
+              "name": "윤찬혁",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "민간Biz3팀",
+            "leader3": {
+              "name": "이의영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "New-Biz개발실",
+        "leader2": {
+          "name": "조성윤",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "New-Biz기획팀",
+            "leader3": {
+              "name": "고대영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "에셋Biz팀",
+            "leader3": {
+              "name": "황기섭",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "서산태안Biz팀",
+            "leader3": {
+              "name": "황승철",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "송파복정추진팀(S)",
+            "leader3": {
+              "name": "장재영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "P프로젝트TFT",
+            "leader3": null,
+            "memberCount": 1
+          }
+        ]
+      },
+      {
+        "sil": "중점사업지원단(S)",
+        "leader2": {
+          "name": "문민호",
+          "rank": "담당"
+        },
+        "directTeam": true,
+        "teams": [
+          {
+            "team": "중점사업지원단(S)",
+            "leader3": null,
+            "memberCount": 6
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 85,
+      "l1": 2,
+      "l2": 3,
+      "l3": 11,
+      "staff": 69
+    }
+  },
+  {
+    "bonbu": "글로벌사업부",
+    "leader1": {
+      "name": "김경수",
+      "title": "사업부장",
+      "rank": "전무"
+    },
+    "sils": [
+      {
+        "sil": "사업정책협력실",
+        "leader2": {
+          "name": "이장훈",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "국내사업협력팀",
+            "leader3": {
+              "name": "서영덕",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "대외정책협력팀",
+            "leader3": {
+              "name": "이경훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          }
+        ]
+      },
+      {
+        "sil": "글로벌지원실",
+        "leader2": {
+          "name": "노재학",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "글로벌기획팀",
+            "leader3": {
+              "name": "홍윤기",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "글로벌마케팅팀",
+            "leader3": {
+              "name": "정준호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          }
+        ]
+      },
+      {
+        "sil": "글로벌개발실",
+        "leader2": {
+          "name": "박영근",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "글로벌건축주택개발팀",
+            "leader3": {
+              "name": "이응석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "글로벌에너지인프라개발팀",
+            "leader3": {
+              "name": "이규현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "북미사업전담조직준비팀(S)",
+            "leader3": {
+              "name": "강석현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 3
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 60,
+      "l1": 1,
+      "l2": 3,
+      "l3": 7,
+      "staff": 49
+    }
+  },
+  {
+    "bonbu": "기술연구원",
+    "leader1": {
+      "name": "김재영",
+      "title": "원장",
+      "rank": "원장"
+    },
+    "sils": [
+      {
+        "sil": "연구기획실",
+        "leader2": {
+          "name": "마근혁",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "연구기획팀",
+            "leader3": {
+              "name": "윤제성",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "연구관리팀",
+            "leader3": {
+              "name": "김강석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          }
+        ]
+      },
+      {
+        "sil": "건축주거연구실",
+        "leader2": {
+          "name": "안계현",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "주거환경연구팀",
+            "leader3": {
+              "name": "이병두",
+              "rank": "책임연구원"
+            },
+            "memberCount": 14
+          },
+          {
+            "team": "DX연구팀",
+            "leader3": {
+              "name": "이현주",
+              "rank": "책임연구원"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "로보틱스&OSC연구팀",
+            "leader3": {
+              "name": "김규환",
+              "rank": "책임연구원"
+            },
+            "memberCount": 18
+          }
+        ]
+      },
+      {
+        "sil": "에너지환경연구실",
+        "leader2": {
+          "name": "서유택",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "수소에너지연구팀",
+            "leader3": {
+              "name": "유연식",
+              "rank": "책임연구원"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "탄소포집활용연구팀",
+            "leader3": {
+              "name": "황덕영",
+              "rank": "책임연구원"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "에너지수송저장연구팀",
+            "leader3": {
+              "name": "박인선",
+              "rank": "책임연구원"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "자원순환연구팀",
+            "leader3": {
+              "name": "이동준",
+              "rank": "책임연구원"
+            },
+            "memberCount": 7
+          }
+        ]
+      },
+      {
+        "sil": "인프라도시연구실",
+        "leader2": {
+          "name": "송명준",
+          "rank": "책임연구원"
+        },
+        "teams": [
+          {
+            "team": "해양항만인프라연구팀",
+            "leader3": {
+              "name": "정길제",
+              "rank": "책임연구원"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "지하공간인프라연구팀",
+            "leader3": {
+              "name": "신영진",
+              "rank": "책임연구원"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "모빌리티인프라연구팀",
+            "leader3": {
+              "name": "김태경",
+              "rank": "책임연구원"
+            },
+            "memberCount": 11
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 152,
+      "l1": 1,
+      "l2": 4,
+      "l3": 12,
+      "staff": 135
+    }
+  },
+  {
+    "bonbu": "PI본부",
+    "leader1": {
+      "name": "구영철",
+      "title": "본부장",
+      "rank": "전무"
+    },
+    "sils": [
+      {
+        "sil": "PI전략실",
+        "leader2": {
+          "name": "이종철",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "통합PI팀",
+            "leader3": {
+              "name": "김성수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "PI운영개선팀",
+            "leader3": {
+              "name": "권태우",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "PI협력팀",
+            "leader3": {
+              "name": "유병창",
+              "rank": "책임매니저"
+            },
+            "memberCount": 3
+          },
+          {
+            "team": "PI상생리스크관리팀",
+            "leader3": {
+              "name": "박성원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "플랜트수행개선담당",
+            "leader3": {
+              "name": "임재용",
+              "rank": "상무"
+            },
+            "memberCount": 9
+          }
+        ]
+      },
+      {
+        "sil": "에너지인프라PI실",
+        "leader2": {
+          "name": "이수영",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "토목PI팀",
+            "leader3": {
+              "name": "류승무",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "회전장치PI팀",
+            "leader3": {
+              "name": "이해진",
+              "rank": "책임매니저"
+            },
+            "memberCount": 17
+          },
+          {
+            "team": "전기계장PI팀",
+            "leader3": {
+              "name": "유진환",
+              "rank": "책임매니저"
+            },
+            "memberCount": 17
+          },
+          {
+            "team": "물류운영팀",
+            "leader3": {
+              "name": "이광택",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "건축PI실",
+        "leader2": {
+          "name": "우해동",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "건축구조PI팀",
+            "leader3": {
+              "name": "최준호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "건축기전PI팀",
+            "leader3": {
+              "name": "신은호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 14
+          },
+          {
+            "team": "건축마감PI팀",
+            "leader3": {
+              "name": "김승록",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 143,
+      "l1": 2,
+      "l2": 3,
+      "l3": 11,
+      "staff": 127
+    }
+  },
+  {
+    "bonbu": "재경본부",
+    "leader1": {
+      "name": "이형석",
+      "title": "본부장",
+      "rank": "전무"
+    },
+    "sils": [
+      {
+        "sil": "예산관리실",
+        "leader2": {
+          "name": "박인주",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "예산기획팀",
+            "leader3": {
+              "name": "백인경",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "수주예산팀",
+            "leader3": {
+              "name": "김세민",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "수행예산팀",
+            "leader3": {
+              "name": "김병오",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          }
+        ]
+      },
+      {
+        "sil": "회계관리실",
+        "leader2": {
+          "name": "신영석",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "회계팀",
+            "leader3": {
+              "name": "이대호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "세무팀",
+            "leader3": {
+              "name": "안유겸",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          }
+        ]
+      },
+      {
+        "sil": "재무관리실",
+        "leader2": {
+          "name": "김영훈",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "재정팀",
+            "leader3": {
+              "name": "김동찬",
+              "rank": "책임매니저"
+            },
+            "memberCount": 18
+          },
+          {
+            "team": "금융팀",
+            "leader3": {
+              "name": "강승훈",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "PF사업지원팀",
+            "leader3": {
+              "name": "김진섭",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "경영분석팀",
+            "leader3": {
+              "name": "오경원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 16
+          },
+          {
+            "team": "경주사업소",
+            "leader3": null,
+            "memberCount": 2
+          }
+        ]
+      },
+      {
+        "sil": "사업관리실",
+        "leader2": {
+          "name": "김진홍",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "사업관리팀",
+            "leader3": {
+              "name": "최진호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "공정RM팀",
+            "leader3": {
+              "name": "최기원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "토목지원팀",
+            "leader3": {
+              "name": "강동주",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "건축주택지원팀",
+            "leader3": {
+              "name": "이병내",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          },
+          {
+            "team": "플랜트NewEnergy지원팀",
+            "leader3": {
+              "name": "김양수",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "재경기획팀",
+        "leader2": null,
+        "directTeam": true,
+        "teams": [
+          {
+            "team": "재경기획팀",
+            "leader3": {
+              "name": "이주원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 179,
+      "l1": 1,
+      "l2": 4,
+      "l3": 15,
+      "staff": 159
+    }
+  },
+  {
+    "bonbu": "경영지원본부",
+    "leader1": {
+      "name": "유명근",
+      "title": "본부장",
+      "rank": "부사장"
+    },
+    "sils": [
+      {
+        "sil": "법무실",
+        "leader2": {
+          "name": "민기홍",
+          "rank": "전무"
+        },
+        "teams": [
+          {
+            "team": "컴플라이언스팀",
+            "leader3": {
+              "name": "문지희",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "국내토목플랜트법무팀",
+            "leader3": {
+              "name": "엄상현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "국내건축주택법무팀",
+            "leader3": {
+              "name": "전서영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "해외토목건축법무팀",
+            "leader3": {
+              "name": "장호성",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          },
+          {
+            "team": "해외플랜트NewEnergy법무팀",
+            "leader3": {
+              "name": "이재원",
+              "rank": "책임매니저"
+            },
+            "memberCount": 10
+          }
+        ]
+      },
+      {
+        "sil": "홍보실",
+        "leader2": {
+          "name": "이영호",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "PR기획팀",
+            "leader3": {
+              "name": "이선영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          },
+          {
+            "team": "언론PR팀",
+            "leader3": {
+              "name": "엄도영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "V-Supporters Team",
+            "leader3": {
+              "name": "고승현",
+              "rank": "책임매니저"
+            },
+            "memberCount": 4
+          }
+        ]
+      },
+      {
+        "sil": "인사실",
+        "leader2": {
+          "name": "김민규",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "인사기획팀",
+            "leader3": {
+              "name": "임현진",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "인사지원팀",
+            "leader3": {
+              "name": "김도연",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "인재운영팀",
+            "leader3": {
+              "name": "최선욱",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "인재성장팀",
+            "leader3": {
+              "name": "홍성호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          }
+        ]
+      },
+      {
+        "sil": "IT지원실",
+        "leader2": {
+          "name": "최광묵",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "IT지원팀",
+            "leader3": {
+              "name": "오진호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 13
+          },
+          {
+            "team": "AX플랫폼팀",
+            "leader3": {
+              "name": "박찬일",
+              "rank": "책임매니저"
+            },
+            "memberCount": 11
+          }
+        ]
+      },
+      {
+        "sil": "비즈니스지원실",
+        "leader2": {
+          "name": "권성준",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "비즈니스지원팀",
+            "leader3": {
+              "name": "김현우",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "워크앤라이프지원팀",
+            "leader3": {
+              "name": "김준우",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          }
+        ]
+      },
+      {
+        "sil": "기술교육원",
+        "leader2": null,
+        "teams": [
+          {
+            "team": "기술교육팀",
+            "leader3": {
+              "name": "이정표",
+              "rank": "책임매니저"
+            },
+            "memberCount": 19
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 187,
+      "l1": 1,
+      "l2": 5,
+      "l3": 17,
+      "staff": 164
+    }
+  },
+  {
+    "bonbu": "전략기획사업부",
+    "leader1": {
+      "name": "성완상",
+      "title": "사업부장",
+      "rank": "상무"
+    },
+    "sils": [
+      {
+        "sil": "경영기획실",
+        "leader2": {
+          "name": "박병규",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "경영기획팀",
+            "leader3": {
+              "name": "정회경",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "전략인텔리전스팀",
+            "leader3": {
+              "name": "박대균",
+              "rank": "책임매니저"
+            },
+            "memberCount": 8
+          },
+          {
+            "team": "투자인텔리전스팀",
+            "leader3": {
+              "name": "김선명",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      },
+      {
+        "sil": "워크이노베이션센터",
+        "leader2": {
+          "name": "박소은",
+          "rank": "책임매니저"
+        },
+        "teams": [
+          {
+            "team": "컬처디자인랩",
+            "leader3": {
+              "name": "박율우",
+              "rank": "책임매니저"
+            },
+            "memberCount": 15
+          },
+          {
+            "team": "AI디자인랩",
+            "leader3": {
+              "name": "도정호",
+              "rank": "책임매니저"
+            },
+            "memberCount": 5
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 46,
+      "l1": 1,
+      "l2": 2,
+      "l3": 5,
+      "staff": 38
+    }
+  },
+  {
+    "bonbu": "감사실",
+    "leader1": null,
+    "sils": [
+      {
+        "sil": "감사실",
+        "leader2": {
+          "name": "이제주",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "감사기획팀",
+            "leader3": {
+              "name": "김진석",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          },
+          {
+            "team": "감사1팀",
+            "leader3": {
+              "name": "이병기",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "감사2팀",
+            "leader3": {
+              "name": "손용준",
+              "rank": "책임매니저"
+            },
+            "memberCount": 9
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 25,
+      "l1": 0,
+      "l2": 1,
+      "l3": 3,
+      "staff": 21
+    }
+  },
+  {
+    "bonbu": "GBC개발사업단",
+    "leader1": {
+      "name": "선종훈",
+      "title": "단장",
+      "rank": "상무"
+    },
+    "sils": [
+      {
+        "sil": "GBC개발지원실",
+        "leader2": {
+          "name": "김성광",
+          "rank": "상무"
+        },
+        "teams": [
+          {
+            "team": "GBC사업기획팀",
+            "leader3": {
+              "name": "이창열",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          },
+          {
+            "team": "GBC사업추진팀",
+            "leader3": {
+              "name": "진병운",
+              "rank": "책임매니저"
+            },
+            "memberCount": 7
+          },
+          {
+            "team": "GBC공공기여팀",
+            "leader3": {
+              "name": "송병영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 2
+          }
+        ]
+      },
+      {
+        "sil": "GBC CM실",
+        "leader2": null,
+        "teams": [
+          {
+            "team": "GBC설계관리팀",
+            "leader3": {
+              "name": "김재영",
+              "rank": "책임매니저"
+            },
+            "memberCount": 12
+          },
+          {
+            "team": "GBC건설관리팀",
+            "leader3": {
+              "name": "나유성",
+              "rank": "책임매니저"
+            },
+            "memberCount": 6
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "total": 35,
+      "l1": 1,
+      "l2": 1,
+      "l3": 5,
+      "staff": 28
+    }
+  }
+];
+
+</script>
+
+<script>
+// 제외 항목별 직원 데이터 (직원명단 260518 원본 기준)
+window.EXCLUSION_DATA = {
+  "대표이사": [
+    {
+      "name": "이한우",
+      "rank": "부사장",
+      "grade": "부사장",
+      "title": "대표이사",
+      "dept": "대표이사실 > 대표이사실",
+      "location": "본사"
+    }
+  ],
+  "자문역": [
+    {
+      "name": "김기범",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "이우호",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "이종찬",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "서희석",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "강용희",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "황준하",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "전재호",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "이상복",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "김태희",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "변경현",
+      "rank": "자문역",
+      "grade": "자문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    }
+  ],
+  "고문역": [
+    {
+      "name": "전병식",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "이광석",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "경영지원본부 > 경영지원본부",
+      "location": "본사"
+    },
+    {
+      "name": "노희관",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "토목사업본부 > 토목사업본부",
+      "location": "본사"
+    },
+    {
+      "name": "윤영준",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "김학진",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "GBC개발사업단 > GBC개발사업단",
+      "location": "본사"
+    },
+    {
+      "name": "이건기",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "GBC개발사업단 > GBC개발사업단",
+      "location": "본사"
+    },
+    {
+      "name": "구자훈",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "GBC개발사업단 > GBC개발사업단",
+      "location": "본사"
+    },
+    {
+      "name": "류성안",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "단장",
+      "dept": "플랜트사업본부 > 샤힌사업단",
+      "location": "국내현장"
+    },
+    {
+      "name": "이중열",
+      "rank": "고문역",
+      "grade": "고문역",
+      "title": "",
+      "dept": "GBC개발사업단 > GBC개발사업단",
+      "location": "본사"
+    }
+  ],
+  "사외이사": [
+    {
+      "name": "조혜경",
+      "rank": "사외이사",
+      "grade": "사외이사",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "정문기",
+      "rank": "사외이사",
+      "grade": "사외이사",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "정은혜",
+      "rank": "사외이사",
+      "grade": "사외이사",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "장화진",
+      "rank": "사외이사",
+      "grade": "사외이사",
+      "title": "",
+      "dept": "기타사업부 > 비상근",
+      "location": "본사"
+    }
+  ],
+  "컨틴전시플랜팀": [
+    {
+      "name": "이재한",
+      "rank": "책임매니저",
+      "grade": "G3",
+      "title": "팀장",
+      "dept": "경영지원본부 > 비즈니스지원실 > 컨틴전시플랜팀",
+      "location": "본사"
+    },
+    {
+      "name": "송인호",
+      "rank": "매니저",
+      "grade": "P3(본사)",
+      "title": "",
+      "dept": "경영지원본부 > 비즈니스지원실 > 컨틴전시플랜팀",
+      "location": "본사"
+    },
+    {
+      "name": "김민영",
+      "rank": "매니저",
+      "grade": "파견직원",
+      "title": "",
+      "dept": "경영지원본부 > 비즈니스지원실 > 컨틴전시플랜팀",
+      "location": "본사"
+    }
+  ],
+  "컨틴전시플랜팀(예비군대대)": [
+    {
+      "name": "김유철",
+      "rank": "책임매니저",
+      "grade": "G3",
+      "title": "예비군대대장",
+      "dept": "경영지원본부 > 비즈니스지원실 > 컨틴전시플랜팀",
+      "location": "본사"
+    },
+    {
+      "name": "김희태",
+      "rank": "책임매니저",
+      "grade": "G2",
+      "title": "예비군중대장",
+      "dept": "경영지원본부 > 비즈니스지원실 > 컨틴전시플랜팀",
+      "location": "본사"
+    }
+  ],
+  "본사사옥": [
+    {
+      "name": "황두원",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "양충석",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "이중원",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "서명환",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "최형일",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "강문석",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박무선",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "한윤환",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박대규",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "김진성",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박중훈",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "김대현",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박범수",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박종영",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "이용두",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "이용수",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "조훈",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "박경동",
+      "rank": "매니저",
+      "grade": "운영지원 직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "김홍석",
+      "rank": "매니저",
+      "grade": "파견직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    },
+    {
+      "name": "최만섭",
+      "rank": "매니저",
+      "grade": "파견직원",
+      "title": "",
+      "dept": "경영지원본부 > 본사사옥",
+      "location": "고용원근무지"
+    }
+  ],
+  "English Lab": [
+    {
+      "name": "Thoming Aaron(애런 토밍)",
+      "rank": "전문위원",
+      "grade": "전문위원",
+      "title": "",
+      "dept": "경영지원본부 > 인사실 > English Lab",
+      "location": "본사"
+    },
+    {
+      "name": "Sarah Miner(마이너 세라)",
+      "rank": "전문위원",
+      "grade": "전문위원",
+      "title": "",
+      "dept": "경영지원본부 > 인사실 > English Lab",
+      "location": "본사"
+    },
+    {
+      "name": "Jeffrey Wagner(제프리 와그너)",
+      "rank": "전문위원",
+      "grade": "전문위원",
+      "title": "",
+      "dept": "경영지원본부 > 인사실 > English Lab",
+      "location": "본사"
+    },
+    {
+      "name": "윤재원",
+      "rank": "전문위원",
+      "grade": "전문위원",
+      "title": "",
+      "dept": "경영지원본부 > 인사실 > English Lab",
+      "location": "본사"
+    }
+  ],
+  "파견처": [
+    {
+      "name": "류균재",
+      "rank": "책임매니저",
+      "grade": "G3",
+      "title": "",
+      "dept": "토목사업본부 > 제주한림해상풍력 운영 및 유지",
+      "location": "파견처"
+    },
+    {
+      "name": "이재용",
+      "rank": "책임매니저",
+      "grade": "G3",
+      "title": "",
+      "dept": "건축주택사업본부 > 송도랜드마크시티(유)",
+      "location": "파견처"
+    },
+    {
+      "name": "이명진",
+      "rank": "책임매니저",
+      "grade": "G3",
+      "title": "",
+      "dept": "개발사업부 > 송도랜드마크시티(유)",
+      "location": "파견처"
+    }
+  ],
+  "비상근": [
+    {
+      "name": "이종찬",
+      "rank": "전문위원",
+      "grade": "전문위원",
+      "title": "",
+      "dept": "NewEnergy사업부 > 비상근",
+      "location": "본사"
+    },
+    {
+      "name": "장계철",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "개발사업부 > 비상근 > 에너지환경개발팀",
+      "location": "본사"
+    },
+    {
+      "name": "정금자",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "류원석",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "PI본부 > 비상근 > PI운영개선팀",
+      "location": "본사"
+    },
+    {
+      "name": "강연수",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트전기계장견적팀",
+      "location": "본사"
+    },
+    {
+      "name": "김신유",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "허인무",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "경영지원본부 > 비상근 > 워크앤라이프지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "남유미",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "최은영",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트수행팀",
+      "location": "본사"
+    },
+    {
+      "name": "임슬기",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "전략기획사업부 > 비상근 > Q-전략팀",
+      "location": "본사"
+    },
+    {
+      "name": "이정희",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "개발사업부 > 비상근 > 개발전략기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "최설화",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "유미영",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "전략기획사업부 > 비상근 > 컬쳐디자인랩",
+      "location": "본사"
+    },
+    {
+      "name": "조숙영",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "재경본부 > 비상근 > 사업지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "김현",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "정경숙",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "김용수",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "경영지원본부 > 비상근 > PR기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "김혜진",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "재경본부 > 비상근 > 금융팀",
+      "location": "본사"
+    },
+    {
+      "name": "오수연",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "NewEnergy사업부 > 비상근 > NewEnergy기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "이후선",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "전략기획사업부 > 비상근 > 경영전략팀",
+      "location": "본사"
+    },
+    {
+      "name": "이태재",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "경영지원본부 > 비상근 > 컴플라이언스팀",
+      "location": "본사"
+    },
+    {
+      "name": "김준식",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "기술연구원 > 비상근 > 연구기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "홍성규",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "토목사업본부 > 비상근 > 토목경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "손동석",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "개발사업부 > 비상근 > 개발사업투자운영팀",
+      "location": "본사"
+    },
+    {
+      "name": "장영철",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "개발사업부 > 비상근 > 에셋플러스팀",
+      "location": "본사"
+    },
+    {
+      "name": "김광태",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "기술연구원 > 비상근 > 연구기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "이동규",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "경영지원본부 > 비상근 > 인재운영팀",
+      "location": "본사"
+    },
+    {
+      "name": "하성호",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "안전품질본부 > 비상근 > 안전기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "차순정",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트토목건축견적팀",
+      "location": "본사"
+    },
+    {
+      "name": "박태수",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트설계관리팀",
+      "location": "본사"
+    },
+    {
+      "name": "김현민",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트기술영업팀",
+      "location": "본사"
+    },
+    {
+      "name": "김민경",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트설계관리팀",
+      "location": "본사"
+    },
+    {
+      "name": "전윤수",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트기계배관견적팀",
+      "location": "본사"
+    },
+    {
+      "name": "한진영",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "안전품질본부 > 비상근 > 안전진단팀",
+      "location": "본사"
+    },
+    {
+      "name": "배준호",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트스마트솔루션팀",
+      "location": "본사"
+    },
+    {
+      "name": "조충형",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "토목사업본부 > 비상근 > 토목경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "정지원",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "재경본부 > 비상근 > 세무팀",
+      "location": "본사"
+    },
+    {
+      "name": "최준호",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "PI본부 > 비상근 > PI운영개선팀",
+      "location": "본사"
+    },
+    {
+      "name": "김현수",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "NewEnergy사업부 > 비상근 > NewEnergy기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "정유진",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "글로벌사업부 > 비상근 > 해외정책기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "김인식",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "전략기획사업부 > 비상근 > 경영기획팀",
+      "location": "본사"
+    },
+    {
+      "name": "천정희",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "건축주택사업본부 > 비상근 > 건축주택경영지원팀",
+      "location": "본사"
+    },
+    {
+      "name": "김재필",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트안전협력팀",
+      "location": "본사"
+    },
+    {
+      "name": "김예나",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트구매품질팀",
+      "location": "본사"
+    },
+    {
+      "name": "권순필",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트공정설계팀",
+      "location": "본사"
+    },
+    {
+      "name": "최경원",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "플랜트사업본부 > 비상근 > 플랜트공정설계팀",
+      "location": "본사"
+    },
+    {
+      "name": "이경덕",
+      "rank": "매니저",
+      "grade": "P1(본사)",
+      "title": "",
+      "dept": "PI본부 > 비상근 > PI운영개선팀",
+      "location": "본사"
+    }
+  ]
+};
+
+window.EXCLUSION_META = {
+  "대표이사": {
+    "group": "직책",
+    "criteria": "직책 = 대표이사"
+  },
+  "자문역": {
+    "group": "직급",
+    "criteria": "직급 = 자문역"
+  },
+  "고문역": {
+    "group": "직급",
+    "criteria": "직급 = 고문역"
+  },
+  "사외이사": {
+    "group": "직급",
+    "criteria": "직급 = 사외이사"
+  },
+  "컨틴전시플랜팀": {
+    "group": "팀명",
+    "criteria": "팀명 = 컨틴전시플랜팀 (예비군대대 제외)"
+  },
+  "컨틴전시플랜팀(예비군대대)": {
+    "group": "팀명",
+    "criteria": "팀명 = 컨틴전시플랜팀 + 직책 = 예비군대대장/예비군중대장"
+  },
+  "본사사옥": {
+    "group": "팀명",
+    "criteria": "팀명 또는 근무지 = 본사사옥"
+  },
+  "English Lab": {
+    "group": "팀명",
+    "criteria": "팀명 = English Lab (외국인 강사)"
+  },
+  "파견처": {
+    "group": "근무지구분",
+    "criteria": "근무지구분 = 파견처"
+  },
+  "비상근": {
+    "group": "근무지구분",
+    "criteria": "근무지 = 비상근 (직위가 자문역/고문역/사외이사인 경우는 직급 그룹에 표시)"
+  }
+};
+
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect, useRef, useCallback } = React;
+
+const ORG_INITIAL = window.ORG_DATA;
+const EXCLUSION_DATA = window.EXCLUSION_DATA || {};
+const EXCLUSION_META = window.EXCLUSION_META || {};
+const STORAGE_KEY = 'org-data-v11';
+const EXCLUSION_KEYS = ['대표이사', '자문역', '고문역', '사외이사', '컨틴전시플랜팀', '컨틴전시플랜팀(예비군대대)', '본사사옥', 'English Lab', '파견처', '비상근'];
+
+// ---------- Persistence ----------
+function loadOrg() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(ORG_INITIAL));
+}
+function saveOrg(org) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(org)); } catch (e) {}
+}
+
+// ---------- Helpers ----------
+function countTeams(b) { return b.sils.reduce((a, s) => a + s.teams.length, 0); }
+function countSils(b) { return b.sils.filter(s => !s.directTeam).length; }
+function countMembers(b) {
+  // Prefer real per-bonbu total from raw data (includes leaders + staff)
+  if (b.stats && typeof b.stats.total === 'number') return b.stats.total;
+  return b.sils.reduce((a, s) => a + s.teams.reduce((x, t) => x + (t.memberCount || 0), 0), 0);
+}
+function countLeaders(org) {
+  let l1 = 0, l2 = 0, l3 = 0;
+  for (const b of org) {
+    if (b.leader1?.name) l1++;
+    if (b.subLeaders) l1 += b.subLeaders.filter(s => s?.name).length;
+    for (const s of b.sils) {
+      if (s.leader2?.name) l2++;
+      for (const t of s.teams) if (t.leader3?.name) l3++;
+    }
+  }
+  return { l1, l2, l3 };
+}
+
+// ---------- App ----------
+function App() {
+  const [org, setOrg] = useState(loadOrg);
+  const [activeBonbu, setActiveBonbu] = useState('ALL');
+  const [query, setQuery] = useState('');
+  const [view, setView] = useState('table');
+  const [editMode, setEditMode] = useState(false);
+  const [showExclusions, setShowExclusions] = useState(false);
+  const headerRef = useRef(null);
+
+  useEffect(() => { saveOrg(org); }, [org]);
+
+  // Dynamically measure header height so the sticky table head sits right below it
+  useEffect(() => {
+    const update = () => {
+      const h = headerRef.current?.getBoundingClientRect().height || 78;
+      document.documentElement.style.setProperty('--header-h', Math.round(h) + 'px');
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (headerRef.current) ro.observe(headerRef.current);
+    window.addEventListener('resize', update);
+    return () => { ro.disconnect(); window.removeEventListener('resize', update); };
+  }, []);
+
+  const stats = useMemo(() => {
+    const lc = countLeaders(org);
+    return {
+      bonbu: org.length,
+      sil: org.reduce((a, b) => a + countSils(b), 0),
+      team: org.reduce((a, b) => a + countTeams(b), 0),
+      members: org.reduce((a, b) => a + countMembers(b), 0),
+      l1: lc.l1, l2: lc.l2, l3: lc.l3,
+    };
+  }, [org]);
+
+  const filtered = useMemo(() => {
+    let data = org;
+    if (activeBonbu !== 'ALL') data = data.filter(b => b.bonbu === activeBonbu);
+    if (!query.trim()) return data;
+    const q = query.trim().toLowerCase();
+    return data.map(b => {
+      const matchStr = (s) => s && s.toLowerCase().includes(q);
+      const bonbuMatch = matchStr(b.bonbu) || matchStr(b.leader1?.name) || (b.subLeaders || []).some(sl => matchStr(sl.name));
+      const sils = b.sils.map(s => {
+        const silMatch = matchStr(s.sil) || matchStr(s.leader2?.name);
+        const teams = s.teams.filter(t => matchStr(t.team) || matchStr(t.leader3?.name));
+        if (silMatch) return s;
+        if (teams.length) return { ...s, teams };
+        return null;
+      }).filter(Boolean);
+      if (bonbuMatch) return b;
+      if (sils.length) return { ...b, sils };
+      return null;
+    }).filter(Boolean);
+  }, [activeBonbu, query, org]);
+
+  const updateOrg = useCallback((mutator) => {
+    setOrg(prev => {
+      const copy = JSON.parse(JSON.stringify(prev));
+      mutator(copy);
+      return copy;
+    });
+  }, []);
+
+  const handleReset = () => {
+    if (confirm('모든 편집 내용을 초기화하시겠습니까?')) {
+      localStorage.removeItem(STORAGE_KEY);
+      setOrg(JSON.parse(JSON.stringify(ORG_INITIAL)));
+    }
+  };
+
+  return (
+    <div className={'app ' + (editMode ? 'edit-mode' : '')}>
+      <Sidebar org={org} active={activeBonbu} onPick={setActiveBonbu} stats={stats} />
+      <main className="main">
+        <Header
+          headerRef={headerRef}
+          query={query} setQuery={setQuery}
+          view={view} setView={setView}
+          stats={stats} active={activeBonbu}
+          editMode={editMode} setEditMode={setEditMode}
+          onReset={handleReset}
+          onShowExclusions={() => setShowExclusions(true)}
+          org={org}
+        />
+        <div className="content">
+          {view === 'table' ? (
+            <TableView org={filtered} highlight={query.trim().toLowerCase()} editMode={editMode} updateOrg={updateOrg} />
+          ) : (
+            <GridView org={filtered} highlight={query.trim().toLowerCase()} />
+          )}
+          {filtered.length === 0 && <div className="empty">검색 결과가 없습니다.</div>}
+        </div>
+        {showExclusions && <ExclusionsModal onClose={() => setShowExclusions(false)} />}
+        <Footer stats={stats} />
+      </main>
+    </div>
+  );
+}
+
+// ---------- Sidebar ----------
+function Sidebar({ org, active, onPick, stats }) {
+  return (
+    <aside className="sidebar">
+      <div className="brand">
+        <div className="brand-mark">本</div>
+        <div className="brand-text">
+          <div className="brand-title">본사 리더 명단</div>
+          <div className="brand-sub">2026-05-18 기준 · 본사 {stats.members.toLocaleString()}명</div>
+        </div>
+      </div>
+      <nav className="nav">
+        <button className={'nav-item ' + (active === 'ALL' ? 'is-active' : '')} onClick={() => onPick('ALL')}>
+          <span className="nav-label">전체 본사</span>
+          <span className="nav-count">{stats.members.toLocaleString()}명</span>
+        </button>
+        <div className="nav-divider" />
+        {org.map(b => (
+          <button key={b.bonbu} className={'nav-item ' + (active === b.bonbu ? 'is-active' : '')} onClick={() => onPick(b.bonbu)}>
+            <span className="nav-label">{b.bonbu}</span>
+            <span className="nav-count">{countMembers(b) ? countMembers(b) + '명' : '—'}</span>
+          </button>
+        ))}
+      </nav>
+      <div className="legend">
+        <div className="legend-title">범례</div>
+        <div className="legend-row"><span className="chip chip-l1">L1</span><span>본부장·사업부장·원장·단장·담당</span></div>
+        <div className="legend-row"><span className="chip chip-l2">L2</span><span>실장 · Center장</span></div>
+        <div className="legend-row"><span className="chip chip-l3">L3</span><span>팀장 · 팀장(S)</span></div>
+      </div>
+    </aside>
+  );
+}
+
+// ---------- Header ----------
+function Header({ headerRef, query, setQuery, view, setView, stats, active, editMode, setEditMode, onReset, onShowExclusions, org }) {
+  const handleDownloadExcel = () => exportExcel(org);
+  return (
+    <header className="header" ref={headerRef}>
+      <div className="header-l">
+        <div className="crumb">
+          <span>본사 조직</span>
+          <span className="crumb-sep">/</span>
+          <span className="crumb-current">{active === 'ALL' ? '전체 본부' : active}</span>
+        </div>
+        <div className="title">부서별 리더 1·2·3</div>
+      </div>
+      <div className="header-r">
+        <div className="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input type="text" placeholder="이름·부서·팀 검색" value={query} onChange={e => setQuery(e.target.value)} />
+          {query && <button className="search-clear" onClick={() => setQuery('')} aria-label="clear">×</button>}
+        </div>
+        <div className="view-toggle">
+          <button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}>표</button>
+          <button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}>카드</button>
+        </div>
+        <button className="btn-ghost" onClick={onShowExclusions}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M4.93 4.93l14.14 14.14" /></svg>
+          제외항목
+        </button>
+        <button className={'btn-ghost ' + (editMode ? 'is-on' : '')} onClick={() => setEditMode(v => !v)}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="m18.5 2.5 3 3L12 15l-4 1 1-4Z" /></svg>
+          {editMode ? '편집 종료' : '편집'}
+        </button>
+        {editMode && (
+          <button className="btn-ghost btn-warn" onClick={onReset} title="모든 편집 내용 초기화">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></svg>
+            초기화
+          </button>
+        )}
+        <button className="btn-primary" onClick={handleDownloadExcel}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></svg>
+          엑셀 다운로드
+        </button>
+      </div>
+    </header>
+  );
+}
+
+// ---------- Editable text ----------
+function Editable({ value, onChange, editMode, placeholder, multi }) {
+  const ref = useRef(null);
+  const [editing, setEditing] = useState(false);
+
+  if (!editMode) return <>{value || placeholder || ''}</>;
+
+  return (
+    <span
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      className={'editable ' + (editing ? 'is-editing' : '') + (!value ? ' is-empty' : '')}
+      data-placeholder={placeholder || ''}
+      onFocus={() => setEditing(true)}
+      onBlur={(e) => {
+        setEditing(false);
+        const t = e.currentTarget.innerText.trim();
+        if (t !== (value || '')) onChange(t);
+      }}
+      onKeyDown={(e) => {
+        if (!multi && e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); }
+        if (e.key === 'Escape') { e.currentTarget.innerText = value || ''; e.currentTarget.blur(); }
+      }}
+    >
+      {value || ''}
+    </span>
+  );
+}
+
+// ---------- Hi ----------
+function Hi({ text, q }) {
+  if (!q || !text) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(q);
+  if (idx === -1) return <>{text}</>;
+  return <>{text.slice(0, idx)}<mark>{text.slice(idx, idx + q.length)}</mark>{text.slice(idx + q.length)}</>;
+}
+
+// ---------- Leader cell ----------
+function LeaderCell({ leader, q, kind, fallback = '—', editMode, onChangeName, onChangeRank, onChangeTitle }) {
+  if (!leader || !leader.name) {
+    if (editMode) {
+      return (
+        <div className="leader leader-add">
+          <span className={'leader-dot dot-' + kind} />
+          <div className="leader-text">
+            <div className="leader-name">
+              <Editable value="" placeholder="+ 성명 추가" editMode={editMode} onChange={(v) => v && onChangeName?.(v)} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return <span className="leader-empty">{fallback}</span>;
+  }
+  return (
+    <div className="leader">
+      <span className={'leader-dot dot-' + kind} />
+      <div className="leader-text">
+        <div className="leader-name">
+          {editMode ? <Editable value={leader.name} editMode={editMode} placeholder="성명" onChange={onChangeName} /> : <Hi text={leader.name} q={q} />}
+        </div>
+        {(leader.rank || editMode) && (
+          <div className="leader-rank">
+            {editMode ? <Editable value={leader.rank || ''} editMode={editMode} placeholder="직급" onChange={onChangeRank} /> : leader.rank}
+          </div>
+        )}
+        {leader.title && onChangeTitle && (
+          <div className="leader-rank">
+            {editMode ? <Editable value={leader.title} editMode={editMode} placeholder="직책" onChange={onChangeTitle} /> : leader.title}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Table view ----------
+function TableView({ org, highlight, editMode, updateOrg }) {
+  return (
+    <div className="table-wrap">
+      <table className="org-table">
+        <colgroup>
+          <col style={{ width: '14%' }} />
+          <col style={{ width: '13%' }} />
+          <col style={{ width: '17%' }} />
+          <col style={{ width: '6%' }} />
+          <col style={{ width: '16.5%' }} />
+          <col style={{ width: '16.5%' }} />
+          <col style={{ width: '17%' }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>본부 / 사업부</th>
+            <th>실</th>
+            <th>팀</th>
+            <th className="th-center">인원</th>
+            <th><span className="th-chip chip-l1">리더 1</span><span className="th-sub">본부장·사업부장·원장·단장·담당</span></th>
+            <th><span className="th-chip chip-l2">리더 2</span><span className="th-sub">실장 · Center장</span></th>
+            <th><span className="th-chip chip-l3">리더 3</span><span className="th-sub">팀장 · 팀장(S)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {org.map(b => <BonbuRows key={b.bonbu} b={b} highlight={highlight} editMode={editMode} updateOrg={updateOrg} />)}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function BonbuRows({ b, highlight, editMode, updateOrg }) {
+  const teamRows = [];
+  b.sils.forEach(s => s.teams.forEach((t, ti) => teamRows.push({ s, t, firstOfSil: ti === 0, silCount: s.teams.length })));
+  const totalRows = Math.max(teamRows.length, 1);
+
+  const setBonbu = (path, value) => updateOrg(o => {
+    const bb = o.find(x => x.bonbu === b.bonbu);
+    let cur = bb;
+    for (let i = 0; i < path.length - 1; i++) cur = cur[path[i]];
+    cur[path[path.length - 1]] = value;
+  });
+  const setTeam = (silIdx, teamIdx, key, value) => updateOrg(o => {
+    const bb = o.find(x => x.bonbu === b.bonbu);
+    if (!bb.sils[silIdx].teams[teamIdx][key] && key === 'leader3') bb.sils[silIdx].teams[teamIdx][key] = { name: '', rank: '' };
+    if (key === 'team') bb.sils[silIdx].teams[teamIdx].team = value;
+    else if (key.startsWith('leader3.')) {
+      if (!bb.sils[silIdx].teams[teamIdx].leader3) bb.sils[silIdx].teams[teamIdx].leader3 = { name: '', rank: '' };
+      bb.sils[silIdx].teams[teamIdx].leader3[key.split('.')[1]] = value;
+    } else if (key === 'memberCount') bb.sils[silIdx].teams[teamIdx].memberCount = parseInt(value) || 0;
+  });
+  const setSil = (silIdx, key, value) => updateOrg(o => {
+    const bb = o.find(x => x.bonbu === b.bonbu);
+    if (key === 'sil') bb.sils[silIdx].sil = value;
+    else if (key.startsWith('leader2.')) {
+      if (!bb.sils[silIdx].leader2) bb.sils[silIdx].leader2 = { name: '', rank: '' };
+      bb.sils[silIdx].leader2[key.split('.')[1]] = value;
+    }
+  });
+  const setL1 = (key, value) => updateOrg(o => {
+    const bb = o.find(x => x.bonbu === b.bonbu);
+    if (!bb.leader1) bb.leader1 = { name: '', title: '', rank: '' };
+    bb.leader1[key] = value;
+  });
+
+  const findSilIdx = (silName) => b.sils.findIndex(s => s.sil === silName);
+  const findTeamIdx = (silName, teamName) => b.sils.find(s => s.sil === silName).teams.findIndex(t => t.team === teamName);
+
+  if (teamRows.length === 0) {
+    return (
+      <tr className="row-bonbu-only bonbu-start">
+        <td className="cell-bonbu"><BonbuCellContent b={b} q={highlight} /></td>
+        <td colSpan={3} className="cell-empty">—</td>
+        <td><LeaderCell leader={b.leader1} q={highlight} kind="l1" editMode={editMode}
+          onChangeName={(v) => setL1('name', v)}
+          onChangeRank={(v) => setL1('rank', v)} /></td>
+        <td className="cell-empty">—</td>
+        <td className="cell-empty">—</td>
+      </tr>
+    );
+  }
+
+  return (
+    <>
+      {teamRows.map((r, i) => {
+        const isBonbuFirst = i === 0;
+        const isSilFirst = r.firstOfSil;
+        const silIdx = findSilIdx(r.s.sil);
+        const teamIdx = findTeamIdx(r.s.sil, r.t.team);
+        return (
+          <tr key={i} className={(isBonbuFirst ? 'bonbu-start ' : '') + (isSilFirst ? 'sil-start' : '')}>
+            {isBonbuFirst && (
+              <td className="cell-bonbu" rowSpan={totalRows}>
+                <BonbuCellContent b={b} q={highlight} editMode={editMode} onChange={(v) => setBonbu(['bonbu'], v)} />
+              </td>
+            )}
+            {isSilFirst && (
+              <td className="cell-sil" rowSpan={r.silCount}>
+                <div className={'sil-name' + (r.s.directTeam ? ' is-direct' : '')}>
+                  {editMode ? <Editable value={r.s.sil} editMode={editMode} onChange={(v) => setSil(silIdx, 'sil', v)} placeholder="실 이름" /> : <Hi text={r.s.sil} q={highlight} />}
+                  {r.s.directTeam && <span className="badge-direct">직속</span>}
+                </div>
+              </td>
+            )}
+            <td className="cell-team">
+              <div className="team-name">
+                {editMode ? <Editable value={r.t.team} editMode={editMode} onChange={(v) => setTeam(silIdx, teamIdx, 'team', v)} placeholder="팀 이름" /> : <Hi text={r.t.team} q={highlight} />}
+              </div>
+            </td>
+            <td className="cell-count">
+              {editMode ? (
+                <Editable value={String(r.t.memberCount || 0)} editMode={editMode} onChange={(v) => setTeam(silIdx, teamIdx, 'memberCount', v)} placeholder="0" />
+              ) : (
+                <span className="member-count">{r.t.memberCount || 0}</span>
+              )}
+            </td>
+            {isBonbuFirst && (
+              <td className="cell-l1" rowSpan={totalRows}>
+                <LeaderCell leader={b.leader1} q={highlight} kind="l1" editMode={editMode}
+                  onChangeName={(v) => setL1('name', v)}
+                  onChangeRank={(v) => setL1('rank', v)} />
+                {b.subLeaders && b.subLeaders.map((sl, j) => (
+                  <div key={j} className="sub-leader">
+                    <div className="leader">
+                      <span className="leader-dot dot-l1" />
+                      <div className="leader-text">
+                        <div className="leader-name">
+                          {editMode ? <Editable value={sl.name} editMode={editMode} onChange={(v) => updateOrg(o => { o.find(x => x.bonbu === b.bonbu).subLeaders[j].name = v; })} /> : <Hi text={sl.name} q={highlight} />}
+                        </div>
+                        <div className="leader-rank">{sl.rank}</div>
+                        <div className="sub-leader-note">{sl.title}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </td>
+            )}
+            {isSilFirst && (
+              <td className="cell-l2" rowSpan={r.silCount}>
+                <LeaderCell leader={r.s.leader2} q={highlight} kind="l2" fallback="공석" editMode={editMode}
+                  onChangeName={(v) => setSil(silIdx, 'leader2.name', v)}
+                  onChangeRank={(v) => setSil(silIdx, 'leader2.rank', v)} />
+              </td>
+            )}
+            <td className="cell-l3">
+              <LeaderCell leader={r.t.leader3} q={highlight} kind="l3" fallback="공석" editMode={editMode}
+                onChangeName={(v) => setTeam(silIdx, teamIdx, 'leader3.name', v)}
+                onChangeRank={(v) => setTeam(silIdx, teamIdx, 'leader3.rank', v)} />
+            </td>
+          </tr>
+        );
+      })}
+    </>
+  );
+}
+
+function BonbuCellContent({ b, q, editMode, onChange }) {
+  const teamN = countTeams(b);
+  const silN = countSils(b);
+  const mem = countMembers(b);
+  const st = b.stats || { l1: 0, l2: 0, l3: 0, staff: 0 };
+  return (
+    <div className="bonbu-cell">
+      <div className="bonbu-name">
+        {editMode ? <Editable value={b.bonbu} editMode={editMode} onChange={onChange} /> : <Hi text={b.bonbu} q={q} />}
+      </div>
+      <div className="bonbu-meta">
+        <span>{silN}실</span>
+        <span className="dot-sep">·</span>
+        <span>{teamN}팀</span>
+        <span className="dot-sep">·</span>
+        <span>{mem}명</span>
+      </div>
+      <div className="bonbu-breakdown">
+        <span className="bb-l1">리더 1 {st.l1}명</span>
+        <span className="bb-sep">,</span>
+        <span className="bb-l2">리더 2 {st.l2}명</span>
+        <span className="bb-sep">,</span>
+        <span className="bb-l3">리더 3 {st.l3}명</span>
+        <span className="bb-sep">,</span>
+        <span className="bb-staff">직원 {st.staff}명</span>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Grid View ----------
+function GridView({ org, highlight }) {
+  return (
+    <div className="grid-view">
+      {org.map(b => (
+        <section key={b.bonbu} className="card-bonbu">
+          <div className="card-bonbu-head">
+            <div>
+              <div className="card-bonbu-title"><Hi text={b.bonbu} q={highlight} /></div>
+              <div className="card-bonbu-meta">{countSils(b)}실 · {countTeams(b)}팀 · {countMembers(b)}명</div>
+            </div>
+            <div className="card-bonbu-l1">
+              <div className="card-l1-label">리더 1</div>
+              {b.leader1 ? (
+                <div className="card-l1-name"><Hi text={b.leader1.name} q={highlight} /> <span className="card-l1-rank">{b.leader1.rank}</span></div>
+              ) : <div className="card-l1-name muted">—</div>}
+              {b.subLeaders && b.subLeaders.map((sl, j) => (
+                <div className="card-l1-name" key={j} style={{ marginTop: 4 }}>
+                  <Hi text={sl.name} q={highlight} /> <span className="card-l1-rank">{sl.rank}</span>
+                  <div className="card-sub-note">{sl.title}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="card-sils">
+            {b.sils.map(s => (
+              <div key={s.sil} className={'card-sil' + (s.directTeam ? ' is-direct' : '')}>
+                <div className="card-sil-head">
+                  <div>
+                    <div className="card-sil-name">
+                      <Hi text={s.sil} q={highlight} />
+                      {s.directTeam && <span className="badge-direct">직속</span>}
+                    </div>
+                    <div className="card-sil-l2">
+                      <span className="dot dot-l2" /> 실장 ·{' '}
+                      {s.leader2 ? <><Hi text={s.leader2.name} q={highlight} /> <span className="muted">{s.leader2.rank}</span></> : <span className="muted">공석</span>}
+                    </div>
+                  </div>
+                </div>
+                <ul className="card-teams">
+                  {s.teams.map(t => (
+                    <li key={t.team}>
+                      <span className="card-team-name">
+                        <Hi text={t.team} q={highlight} />
+                        <span className="card-team-cnt">{t.memberCount || 0}</span>
+                      </span>
+                      <span className="card-team-l3">
+                        <span className="dot dot-l3" />
+                        {t.leader3 ? <Hi text={t.leader3.name} q={highlight} /> : <span className="muted">공석</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+// ---------- Exclusions Modal ----------
+function ExclusionsModal({ onClose }) {
+  const [active, setActive] = useState(EXCLUSION_KEYS[0]);
+  const list = EXCLUSION_DATA[active] || [];
+  const meta = EXCLUSION_META[active] || {};
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  // Group keys for sidebar
+  const groups = {};
+  for (const k of EXCLUSION_KEYS) {
+    const g = (EXCLUSION_META[k]?.group) || '기타';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(k);
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head">
+          <div>
+            <div className="modal-title">본 명단에서 제외된 항목</div>
+            <div className="modal-sub">아래 기준에 해당하는 직원은 본 리더 명단에서 제외되었습니다.</div>
+          </div>
+          <button className="modal-close" onClick={onClose} aria-label="close">×</button>
+        </div>
+        <div className="modal-body">
+          <div className="modal-tabs">
+            {Object.entries(groups).map(([g, keys]) => (
+              <div className="modal-tab-group" key={g}>
+                <div className="modal-tab-group-label">{g}</div>
+                {keys.map(k => {
+                  const n = (EXCLUSION_DATA[k] || []).length;
+                  return (
+                    <button key={k} className={'modal-tab ' + (active === k ? 'is-active' : '')} onClick={() => setActive(k)}>
+                      <span className="modal-tab-name">{k}</span>
+                      <span className="modal-tab-count">{n || '—'}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <div className="modal-content">
+            <div className="modal-section-head">
+              <h3 className="modal-section-title">{active}</h3>
+              <div className="modal-section-meta">{list.length}명</div>
+            </div>
+            {meta.criteria && <p className="modal-section-note">대상 기준: {meta.criteria}</p>}
+            {list.length === 0 ? (
+              <div className="modal-empty">
+                <div className="modal-empty-icon">—</div>
+                <div>원본 직원명단(2026-05-18 기준)에서 이미 제외된 항목입니다.</div>
+                <div className="modal-empty-sub">별도 명단이 필요하면 exclusions.js 파일에서 추가해 주세요.</div>
+              </div>
+            ) : (
+              <table className="modal-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 60 }}>#</th>
+                    <th>성명</th>
+                    <th>직위</th>
+                    <th>소속</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {list.map((p, i) => (
+                    <tr key={i}>
+                      <td className="modal-tnum">{i + 1}</td>
+                      <td className="modal-tname">{p.name}</td>
+                      <td>{p.rank || '—'}</td>
+                      <td className="modal-tdept">{p.dept || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Footer ----------
+function Footer({ stats }) {
+  return (
+    <footer className="footer">
+      <div className="footer-stats">
+        <Stat label="본부/사업부" value={stats.bonbu} />
+        <Stat label="실" value={stats.sil} />
+        <Stat label="팀" value={stats.team} />
+        <Stat label="리더 1" value={stats.l1} tone="l1" />
+        <Stat label="리더 2" value={stats.l2} tone="l2" />
+        <Stat label="리더 3" value={stats.l3} tone="l3" />
+        <Stat label="직원수" value={stats.members.toLocaleString()} />
+      </div>
+      <div className="footer-note">자료 출처: 직원명단 (260518 기준) · 근무지구분=본사 · 제외 항목은 상단 [제외항목] 버튼 참고</div>
+    </footer>
+  );
+}
+function Stat({ label, value, tone }) {
+  return (
+    <div className={'stat ' + (tone ? 'stat-' + tone : '')}>
+      <div className="stat-value">{value}</div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+}
+
+// ---------- Excel Export ----------
+async function exportExcel(org) {
+  // Load SheetJS if not loaded
+  if (!window.XLSX) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  const XLSX = window.XLSX;
+
+  const aoa = [['본부 / 사업부', '실', '팀', '인원', '리더 1 (본부장·사업부장·원장·단장·담당·대표이사)', '리더 2 (실장)', '리더 3 (팀장)']];
+  const merges = [];
+  let row = 1;
+  for (const b of org) {
+    const bonbuStart = row;
+    let l1 = '';
+    if (b.leader1) l1 = `${b.leader1.name} (${b.leader1.title}, ${b.leader1.rank})`;
+    if (b.subLeaders) for (const sl of b.subLeaders) l1 += (l1 ? '\n' : '') + `${sl.name} (${sl.title}, ${sl.rank})`;
+    if (!l1) l1 = '—';
+    const teamRows = [];
+    for (const s of b.sils) s.teams.forEach((t, ti) => teamRows.push({ s, t, firstOfSil: ti === 0, silCount: s.teams.length }));
+    if (teamRows.length === 0) {
+      aoa.push([b.bonbu, '—', '—', 0, l1, '—', '—']);
+      row++;
+      continue;
+    }
+    teamRows.forEach((r, i) => {
+      aoa.push([
+        i === 0 ? b.bonbu : '',
+        r.firstOfSil ? (r.s.directTeam ? r.s.sil + ' (직속)' : r.s.sil) : '',
+        r.t.team,
+        r.t.memberCount || 0,
+        i === 0 ? l1 : '',
+        r.firstOfSil ? (r.s.leader2 ? `${r.s.leader2.name} (${r.s.leader2.rank})` : '공석') : '',
+        r.t.leader3 ? `${r.t.leader3.name} (${r.t.leader3.rank})` : '공석',
+      ]);
+      if (r.firstOfSil && r.silCount > 1) {
+        merges.push({ s: { r: row, c: 1 }, e: { r: row + r.silCount - 1, c: 1 } });
+        merges.push({ s: { r: row, c: 5 }, e: { r: row + r.silCount - 1, c: 5 } });
+      }
+      row++;
+    });
+    if (teamRows.length > 1) {
+      merges.push({ s: { r: bonbuStart, c: 0 }, e: { r: bonbuStart + teamRows.length - 1, c: 0 } });
+      merges.push({ s: { r: bonbuStart, c: 4 }, e: { r: bonbuStart + teamRows.length - 1, c: 4 } });
+    }
+  }
+  // Total row
+  const total = org.reduce((a, b) => a + countMembers(b), 0);
+  aoa.push([]);
+  aoa.push(['합계', '', '', total, '', '', '']);
+
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  ws['!merges'] = merges;
+  ws['!cols'] = [{ wch: 22 }, { wch: 22 }, { wch: 26 }, { wch: 8 }, { wch: 38 }, { wch: 22 }, { wch: 22 }];
+
+  // Styles
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; R++) {
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const addr = XLSX.utils.encode_cell({ r: R, c: C });
+      if (!ws[addr]) ws[addr] = { t: 's', v: '' };
+      const cell = ws[addr];
+      cell.s = {
+        alignment: { vertical: 'top', horizontal: C === 3 ? 'center' : 'left', wrapText: true },
+        border: {
+          top: { style: 'thin', color: { rgb: 'D5D1C5' } }, bottom: { style: 'thin', color: { rgb: 'D5D1C5' } },
+          left: { style: 'thin', color: { rgb: 'D5D1C5' } }, right: { style: 'thin', color: { rgb: 'D5D1C5' } },
+        },
+        font: { name: 'Pretendard', sz: 10 },
+      };
+      if (R === 0) {
+        cell.s.font = { name: 'Pretendard', sz: 10, bold: true, color: { rgb: 'FFFFFF' } };
+        cell.s.fill = { fgColor: { rgb: '2D2A26' }, patternType: 'solid' };
+        cell.s.alignment = { vertical: 'center', horizontal: 'center', wrapText: true };
+      } else if (C === 0) {
+        cell.s.fill = { fgColor: { rgb: 'F5F4EF' }, patternType: 'solid' };
+        cell.s.font = { name: 'Pretendard', sz: 10, bold: true };
+      } else if (C === 1) {
+        cell.s.fill = { fgColor: { rgb: 'FDFCFA' }, patternType: 'solid' };
+      } else if (C === 3) {
+        cell.s.font = { name: 'Pretendard', sz: 10 };
+      }
+    }
+  }
+  // Exclusions sheet
+  const exAoa = [['제외 카테고리', '성명', '직위', '소속']];
+  for (const cat of EXCLUSION_KEYS) {
+    const arr = EXCLUSION_DATA[cat] || [];
+    if (arr.length === 0) {
+      exAoa.push([cat, '(원본 데이터에 미포함)', '', '']);
+    } else {
+      arr.forEach((p, i) => exAoa.push([i === 0 ? cat : '', p.name, p.rank || '', p.dept || '']));
+    }
+  }
+  const exWs = XLSX.utils.aoa_to_sheet(exAoa);
+  exWs['!cols'] = [{ wch: 18 }, { wch: 16 }, { wch: 14 }, { wch: 40 }];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '본사 리더 명단');
+  XLSX.utils.book_append_sheet(wb, exWs, '제외 항목');
+
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellStyles: true });
+  const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '본사 리더 명단.xlsx';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>

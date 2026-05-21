@@ -347,6 +347,9 @@ body {
   text-align: center !important;
   font-variant-numeric: tabular-nums;
 }
+.cell-count.is-small {
+  background: #fef9c3 !important;
+}
 .member-count {
   display: inline-block;
   min-width: 28px;
@@ -737,6 +740,11 @@ window.ORG_DATA = [
     "sils": [
       {
         "sil": "보안운영실",
+        "leader1": {
+          "name": "유명근",
+          "rank": "부사장",
+          "duplicate": true
+        },
         "leader2": {
           "name": "김현민",
           "rank": "책임매니저"
@@ -759,6 +767,11 @@ window.ORG_DATA = [
       },
       {
         "sil": "IR담당",
+        "leader1": {
+          "name": "이형석",
+          "rank": "전무",
+          "duplicate": true
+        },
         "leader2": {
           "name": "위윤희",
           "rank": "담당"
@@ -4056,7 +4069,7 @@ const { useState, useMemo, useEffect, useRef, useCallback } = React;
 const ORG_INITIAL = window.ORG_DATA;
 const EXCLUSION_DATA = window.EXCLUSION_DATA || {};
 const EXCLUSION_META = window.EXCLUSION_META || {};
-const STORAGE_KEY = 'org-data-v13';
+const STORAGE_KEY = 'org-data-v15';
 const EXCLUSION_KEYS = ['대표이사', '자문역', '고문역', '사외이사', '컨틴전시플랜팀', '컨틴전시플랜팀(예비군대대)', '본사사옥', 'English Lab', '파견처', '비상근'];
 
 // ---------- Persistence ----------
@@ -4082,11 +4095,12 @@ function countMembers(b) {
 function countLeaders(org) {
   let l1 = 0, l2 = 0, l3 = 0;
   for (const b of org) {
-    if (b.leader1?.name) l1++;
-    if (b.subLeaders) l1 += b.subLeaders.filter(s => s?.name).length;
+    if (b.leader1?.name && !b.leader1.duplicate) l1++;
+    if (b.subLeaders) l1 += b.subLeaders.filter(s => s?.name && !s.duplicate).length;
     for (const s of b.sils) {
-      if (s.leader2?.name) l2++;
-      for (const t of s.teams) if (t.leader3?.name) l3++;
+      if (s.leader1?.name && !s.leader1.duplicate) l1++;
+      if (s.leader2?.name && !s.leader2.duplicate) l2++;
+      for (const t of s.teams) if (t.leader3?.name && !t.leader3.duplicate) l3++;
     }
   }
   return { l1, l2, l3 };
@@ -4576,6 +4590,7 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
       idx += s.teams.length;
     }
   }
+  const hasSilL1 = b.sils.some(s => s.leader1);
 
   const setBonbu = (path, value) => updateOrg(o => {
     const bb = o.find(x => x.bonbu === b.bonbu);
@@ -4595,6 +4610,10 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
   const setSil = (silIdx, key, value) => updateOrg(o => {
     const bb = o.find(x => x.bonbu === b.bonbu);
     if (key === 'sil') bb.sils[silIdx].sil = value;
+    else if (key.startsWith('leader1.')) {
+      if (!bb.sils[silIdx].leader1) bb.sils[silIdx].leader1 = { name: '', rank: '' };
+      bb.sils[silIdx].leader1[key.split('.')[1]] = value;
+    }
     else if (key.startsWith('leader2.')) {
       if (!bb.sils[silIdx].leader2) bb.sils[silIdx].leader2 = { name: '', rank: '' };
       bb.sils[silIdx].leader2[key.split('.')[1]] = value;
@@ -4650,14 +4669,14 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
                 {editMode ? <Editable value={r.t.team} editMode={editMode} onChange={(v) => setTeam(silIdx, teamIdx, 'team', v)} placeholder="팀 이름" /> : <Hi text={r.t.team} q={highlight} />}
               </div>
             </td>
-            <td className="cell-count">
+            <td className={'cell-count' + ((r.t.memberCount || 0) <= 4 ? ' is-small' : '')}>
               {editMode ? (
                 <Editable value={String(r.t.memberCount || 0)} editMode={editMode} onChange={(v) => setTeam(silIdx, teamIdx, 'memberCount', v)} placeholder="0" />
               ) : (
                 <span className="member-count">{r.t.memberCount || 0}</span>
               )}
             </td>
-            {isBonbuFirst && (
+            {!hasSilL1 && isBonbuFirst && (
               <td className="cell-l1" rowSpan={totalRows}>
                 <BranchedL1Cell
                   bonbu={b}
@@ -4683,6 +4702,13 @@ function BonbuRows({ b, highlight, editMode, updateOrg }) {
                     </div>
                   </div>
                 ))}
+              </td>
+            )}
+            {hasSilL1 && isSilFirst && (
+              <td className="cell-l1" rowSpan={r.silCount}>
+                <LeaderCell leader={r.s.leader1} q={highlight} kind="l1" editMode={editMode}
+                  onChangeName={(v) => setSil(silIdx, 'leader1.name', v)}
+                  onChangeRank={(v) => setSil(silIdx, 'leader1.rank', v)} />
               </td>
             )}
             {isSilFirst && (

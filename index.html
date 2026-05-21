@@ -148,6 +148,39 @@ body {
 .crumb-current { color: var(--text-2); font-weight: 500; }
 .title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
 
+.title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.title-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 2px;
+}
+.title-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.title-stat-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.title-stat.tone-l1 .title-stat-value { color: var(--l1); }
+.title-stat.tone-l2 .title-stat-value { color: var(--l2); }
+.title-stat.tone-l3 .title-stat-value { color: var(--l3); }
+.title-stat-sep { color: var(--muted); font-size: 11px; }
+
 .header-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .search {
@@ -4154,7 +4187,6 @@ function App() {
           {filtered.length === 0 && <div className="empty">검색 결과가 없습니다.</div>}
         </div>
         {showExclusions && <ExclusionsModal onClose={() => setShowExclusions(false)} />}
-        <Footer stats={stats} />
       </main>
     </div>
   );
@@ -4205,7 +4237,24 @@ function Header({ headerRef, query, setQuery, view, setView, stats, active, edit
           <span className="crumb-sep">/</span>
           <span className="crumb-current">{active === 'ALL' ? '전체 본부' : active}</span>
         </div>
-        <div className="title">부서별 리더 1·2·3</div>
+        <div className="title-row">
+          <div className="title">부서별 리더 1·2·3</div>
+          <div className="title-stats">
+            <span className="title-stat"><span>본부/사업부</span><span className="title-stat-value">{stats.bonbu}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat"><span>실</span><span className="title-stat-value">{stats.sil}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat"><span>팀</span><span className="title-stat-value">{stats.team}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat tone-l1"><span>리더 1</span><span className="title-stat-value">{stats.l1}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat tone-l2"><span>리더 2</span><span className="title-stat-value">{stats.l2}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat tone-l3"><span>리더 3</span><span className="title-stat-value">{stats.l3}</span></span>
+            <span className="title-stat-sep">·</span>
+            <span className="title-stat"><span>직원수</span><span className="title-stat-value">{stats.members.toLocaleString()}</span></span>
+          </div>
+        </div>
       </div>
       <div className="header-r">
         <div className="search">
